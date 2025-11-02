@@ -120,7 +120,7 @@ mv mindbridge/* mindbridge/.* . 2>/dev/null || cp -r mindbridge/* . && cp -r min
 
 ### Typography
 - ✅ Clear hierarchies (h1-h6)
-- ✅ Readable font sizes
+- ✅ Clear readable font sizes
 - ✅ Proper line heights
 - ✅ Font weights for emphasis
 
@@ -185,8 +185,8 @@ mv mindbridge/* mindbridge/.* . 2>/dev/null || cp -r mindbridge/* . && cp -r min
 1. ✅ Register an account
 2. ✅ Browse the beautiful homepage
 3. ✅ Book counseling sessions
-4. ✅ View booking history
-5. ✅ Cancel pending bookings
+4. ✅ Viewing booking history
+5. ✅ Cancelling pending bookings
 6. ✅ Navigate smoothly between pages
 
 ### As an Admin:
@@ -381,3 +381,4 @@ Enjoy your beautiful mental wellness platform! 🧠💙
 ---
 
 **Built with ❤️ - MINDBRIDGE Team**
+
