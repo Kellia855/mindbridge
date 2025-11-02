@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Close alerts
+    // Close alert
     const closeButtons = document.querySelectorAll('.close-alert');
     closeButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Auto-hide alerts after 5 seconds
+    // Auto hide alerts after 5 seconds
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
         setTimeout(() => {
