@@ -20,6 +20,7 @@ python manage.py migrate
 
 ## If you encounter issues:
 
+
 ### Fresh Database Setup (Recommended for Development)
 
 If this is a new setup or you can reset the database:
@@ -144,3 +145,4 @@ After migrations, verify in Django admin:
 ---
 
 **Note**: Always backup your database before making structural changes!
+
