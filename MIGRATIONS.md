@@ -1,6 +1,6 @@
 # Migration Guide for Updated Models
 
-## After making the model changes, you need to create and apply migrations:
+## After making the model changes, you should create and apply migrations:
 
 ### Step 1: Make Migrations
 
@@ -145,4 +145,5 @@ After migrations, verify in Django admin:
 ---
 
 **Note**: Always backup your database before making structural changes!
+
 
