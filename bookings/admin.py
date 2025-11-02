@@ -43,3 +43,5 @@ class BookingAdmin(admin.ModelAdmin):
         queryset.update(status='completed')
         self.message_user(request, f"{queryset.count()} booking(s) marked as completed.")
     mark_completed.short_description = "Mark as completed"
+
+
