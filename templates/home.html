@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Your mental wellness journey starts here</h1>
+                <p>We provide comprehensive mental health support for students. Connect with professionals, access resources, and join a supportive community.</p>
+                <div class="hero-buttons">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'bookings:booking_create' %}" class="btn btn-primary">Book a Session</a>
+                        <a href="{% url 'library:library_list' %}" class="btn btn-secondary">Explore Resources</a>
+                    {% else %}
+                        <a href="{% url 'users:register' %}" class="btn btn-primary">Get Started</a>
+                        <a href="{% url 'users:login' %}" class="btn btn-secondary">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-illustration">
+                <i class="fas fa-user-circle hero-icon"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Comprehensive Mental Health Support -->
+<section class="support-section" id="services">
+    <div class="container">
+        <h2 class="section-title">Comprehensive Mental Health Support</h2>
+        <p class="section-subtitle">We're here to support you every step of the way</p>
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="card-icon blue">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Best Available</h3>
+                <p>Access to qualified mental health professionals and counselors available 24/7.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="support-card">
+                <div class="card-icon red">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3>Premium Quality</h3>
+                <p>Evidence-based therapeutic approaches tailored to student needs and challenges.</p>
+                <a href="#specialists" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="support-card">
+                <div class="card-icon gray">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Quick Access</h3>
+                <p>Fast appointment scheduling and immediate support for urgent mental health concerns.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Making a Difference -->
+<section class="difference-section">
+    <div class="container">
+        <h2 class="section-title">Making a Difference</h2>
+        <p class="section-subtitle">Our comprehensive approach to student wellness</p>
+        <div class="difference-grid">
+            <div class="difference-item">
+                <div class="diff-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h4>Professional Counseling</h4>
+                <p>Licensed therapists and counselors</p>
+            </div>
+            <div class="difference-item">
+                <div class="diff-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h4>Peer Support</h4>
+                <p>Connect with fellow students</p>
+            </div>
+            <div class="difference-item">
+                <div class="diff-icon">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <h4>Resource Library</h4>
+                <p>Access wellness materials</p>
+            </div>
+            <div class="difference-item">
+                <div class="diff-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h4>Wellness Events</h4>
+                <p>Join community activities</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Book a Session CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Book a Session</h2>
+            <p>Take the first step towards better mental health. Schedule a confidential session with our wellness team.</p>
+            <a href="{% url 'bookings:booking_create' %}" class="btn btn-light">Schedule Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- How it Works -->
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How it Works</h2>
+        <p class="section-subtitle">Simple steps to start your wellness journey</p>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>Life Advice</h3>
+                <p>Register and tell us about your concerns. Our team will match you with the right support.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Cognitive Test</h3>
+                <p>Optional assessment to help us understand your needs better and provide personalized care.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <h3>Life Satisfaction</h3>
+                <p>Begin your sessions and track your progress towards improved mental wellness.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Meet Our Specialists -->
+<section class="specialists-section" id="specialists">
+    <div class="container">
+        <h2 class="section-title">Meet Our Specialists</h2>
+        <p class="section-subtitle">Experienced professionals dedicated to your wellbeing</p>
+        <div class="specialists-grid">
+            <div class="specialist-card">
+                <div class="specialist-image blue-bg">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Dr. Sarah Johnson</h3>
+                <p class="specialist-title">Clinical Psychologist</p>
+                <p class="specialist-desc">Specializing in anxiety, depression, and stress management for students.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="btn btn-small">Book Appointment</a>
+            </div>
+            <div class="specialist-card">
+                <div class="specialist-image red-bg">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Dr. Michael Chen</h3>
+                <p class="specialist-title">Counseling Psychologist</p>
+                <p class="specialist-desc">Expert in academic stress and relationship counseling.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="btn btn-small">Book Appointment</a>
+            </div>
+            <div class="specialist-card">
+                <div class="specialist-image green-bg">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Dr. Emily Roberts</h3>
+                <p class="specialist-title">Mental Health Counselor</p>
+                <p class="specialist-desc">Focused on mindfulness, self-care, and emotional wellbeing.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="btn btn-small">Book Appointment</a>
+            </div>
+            <div class="specialist-card">
+                <div class="specialist-image purple-bg">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3>Dr. James Wilson</h3>
+                <p class="specialist-title">Trauma Specialist</p>
+                <p class="specialist-desc">Supporting students through difficult life transitions and trauma.</p>
+                <a href="{% url 'bookings:booking_create' %}" class="btn btn-small">Book Appointment</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Wellness Library Preview -->
+<section class="library-preview">
+    <div class="container">
+        <h2 class="section-title">Wellness Library</h2>
+        <p class="section-subtitle">Access helpful resources for mental health and wellbeing</p>
+        <div class="library-showcase">
+            <div class="library-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <p>Explore our collection of articles, books, and guides on mental health topics</p>
+            <a href="{% url 'library:library_list' %}" class="btn btn-primary">Visit Library</a>
+        </div>
+    </div>
+</section>
+
+<!-- Share Your Story -->
+<section class="share-story">
+    <div class="container">
+        <h2 class="section-title">Share Your Story</h2>
+        <p class="section-subtitle">Your voice matters. Share your experiences and support others in the community.</p>
+        <div class="story-grid">
+            <div class="story-pillar">
+                <div class="pillar-icon blue">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <h3>Acknowledge</h3>
+                <p>Share your mental health journey anonymously in a safe, supportive environment.</p>
+            </div>
+            <div class="story-pillar">
+                <div class="pillar-icon red">
+                    <i class="fas fa-user-doctor"></i>
+                </div>
+                <h3>Expert Advice</h3>
+                <p>Receive guidance from mental health professionals and experienced peers.</p>
+            </div>
+            <div class="story-pillar">
+                <div class="pillar-icon green">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community</h3>
+                <p>Connect with others who understand and support your wellness journey.</p>
+            </div>
+        </div>
+        <div class="story-cta">
+            <a href="{% url 'posts:post_create' %}" class="btn btn-primary">Share Your Story</a>
+            <a href="{% url 'posts:post_list' %}" class="btn btn-secondary">Read Stories</a>
+        </div>
+    </div>
+</section>
+
+<!-- Community Stories Preview -->
+<section class="community-stories">
+    <div class="container">
+        <h2 class="section-title">Community Stories</h2>
+        <p class="section-subtitle">Real experiences from our community members</p>
+        <div class="stories-grid">
+            <div class="story-card">
+                <div class="story-author">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Anonymous Student</span>
+                </div>
+                <p class="story-content">"Finding MINDBRIDGE changed my life. The counselors are understanding and the community support is incredible."</p>
+                <div class="story-footer">
+                    <span class="story-date"><i class="fas fa-clock"></i> 2 days ago</span>
+                    <span class="story-likes"><i class="fas fa-heart"></i> 24</span>
+                </div>
+            </div>
+            <div class="story-card">
+                <div class="story-author">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Anonymous Student</span>
+                </div>
+                <p class="story-content">"I was struggling with anxiety and depression. The support I received helped me get through my toughest semester."</p>
+                <div class="story-footer">
+                    <span class="story-date"><i class="fas fa-clock"></i> 5 days ago</span>
+                    <span class="story-likes"><i class="fas fa-heart"></i> 18</span>
+                </div>
+            </div>
+            <div class="story-card">
+                <div class="story-author">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Anonymous Student</span>
+                </div>
+                <p class="story-content">"The wellness events and library resources have been incredibly helpful for my personal growth journey."</p>
+                <div class="story-footer">
+                    <span class="story-date"><i class="fas fa-clock"></i> 1 week ago</span>
+                    <span class="story-likes"><i class="fas fa-heart"></i> 31</span>
+                </div>
+            </div>
+        </div>
+        <div class="view-all">
+            <a href="{% url 'posts:post_list' %}" class="btn btn-outline">View All Stories</a>
+        </div>
+    </div>
+</section>
+
+<!-- Privacy Section -->
+<section class="privacy-section" id="privacy">
+    <div class="container">
+        <h2 class="section-title">Your Privacy Matters</h2>
+        <p class="section-subtitle">We take confidentiality seriously</p>
+        <div class="privacy-content">
+            <div class="privacy-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="privacy-text">
+                <p>All counseling sessions and personal information are kept strictly confidential. Your privacy and trust are our top priorities. We comply with all data protection regulations and maintain the highest standards of professional ethics.</p>
+                <ul class="privacy-features">
+                    <li><i class="fas fa-check"></i> End-to-end encrypted communications</li>
+                    <li><i class="fas fa-check"></i> Anonymous posting options</li>
+                    <li><i class="fas fa-check"></i> HIPAA compliant data storage</li>
+                    <li><i class="fas fa-check"></i> Professional confidentiality standards</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
