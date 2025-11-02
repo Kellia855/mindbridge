@@ -74,7 +74,7 @@ Added fields:
 - `additional_notes` - TextField for extra information
 
 ### All Other Models
-No changes required, they're already correctly set up.
+No change will be required, they're already correctly set up.
 
 ## After Migration
 
@@ -144,6 +144,7 @@ After migrations, verify in Django admin:
 
 ---
 
-**Note**: Always backup your database before making structural changes!
+**Note**: You have to always backup your database before making structural changes!
+
 
 
