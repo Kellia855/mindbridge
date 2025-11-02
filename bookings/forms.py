@@ -40,7 +40,7 @@ class BookingForm(forms.ModelForm):
         model = Booking
         fields = ['full_name', 'email', 'phone_number', 'date', 'time', 'session_type', 'reason', 'additional_notes']
     
-    def clean_date(self):
+    def clean_date(self):  
         booking_date = self.cleaned_data.get('date')
         if booking_date and booking_date < date.today():
             raise forms.ValidationError("Cannot book sessions in the past.")

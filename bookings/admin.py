@@ -12,7 +12,7 @@ class BookingAdmin(admin.ModelAdmin):
     search_fields = ('student__username', 'student__email', 'reason')
     ordering = ('-created_at',)
     
-    fieldsets = (
+    fieldsets = ( 
         ('Booking Information', {
             'fields': ('student', 'date', 'time', 'reason')
         }),
