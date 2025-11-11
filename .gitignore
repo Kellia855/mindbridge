@@ -49,3 +49,7 @@ venv/
 # Database
 *.sql
 *.sqlite
+
+# Google API Credentials (IMPORTANT!)
+bookings/credentials.json
+bookings/token.json
