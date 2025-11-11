@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MindBridge - ALU Wellness Center</title>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
         body {
@@ -89,8 +87,20 @@
      </div>
      <div class="hidden md:flex space-x-6"><button onclick="showSection('home')" class="nav-btn hover:text-red-300 transition-colors">Home</button> <button onclick="showSection('booking')" class="nav-btn hover:text-red-300 transition-colors">Book Session</button> <button onclick="showSection('library')" class="nav-btn hover:text-red-300 transition-colors">Library</button> <button onclick="showSection('stories')" class="nav-btn hover:text-red-300 transition-colors">Stories</button> <button onclick="showSection('dashboard')" class="nav-btn hover:text-red-300 transition-colors">Dashboard</button>
      </div>
-     <div class="flex items-center space-x-4"><select id="user-role" onchange="updateUserRole()" class="bg-blue-800 text-white rounded px-3 py-1 text-sm"> <option value="student">Student View</option> <option value="staff">Staff View</option> </select>
-      <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+     <div class="flex items-center space-x-4">
+      <!-- Auth buttons (shown when not logged in) -->
+      <div id="auth-buttons" class="flex items-center space-x-3">
+       <button onclick="showLoginModal()" class="text-white hover:text-red-300 transition-colors">Login</button>
+       <button onclick="showRegisterModal()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">Register</button>
+      </div>
+      <!-- User menu (shown when logged in) -->
+      <div id="user-menu" class="hidden flex items-center space-x-3">
+       <span id="user-name" class="text-white"></span>
+       <button onclick="handleLogout()" class="text-white hover:text-red-300 transition-colors">Logout</button>
+       <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+        <span id="user-initial" class="text-white font-bold"></span>
+       </div>
+      </div>
      </div>
     </div>
    </div>
@@ -618,15 +628,11 @@
     <div class="bg-white rounded-xl shadow-lg p-8">
      <h2 class="text-3xl font-bold text-gray-900 mb-6">Dashboard</h2><!-- Student Dashboard -->
      <div id="student-dashboard">
-      <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="grid md:grid-cols-1 gap-6 mb-8">
        <div class="bg-blue-50 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-blue-900 mb-4">My Upcoming Sessions</h3>
-        <div id="my-sessions" class="space-y-3"><!-- User's sessions will appear here -->
-        </div>
-       </div>
-       <div class="bg-red-50 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-red-900 mb-4">My Reading List</h3>
-        <div id="my-reading-list" class="space-y-3"><!-- User's saved books will appear here -->
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">My Bookings</h3>
+        <div id="student-bookings-list" class="space-y-4">
+         <p class="text-gray-500 text-center py-4">Loading bookings...</p>
         </div>
        </div>
       </div>
@@ -645,7 +651,15 @@
         <h3 class="text-lg font-semibold text-orange-900 mb-2">Library Books</h3>
         <p class="text-3xl font-bold text-orange-700" id="total-books">0</p>
        </div>
-      </div><!-- Recent Activity -->
+      </div>
+      <!-- All Bookings for Wellness Team -->
+      <div class="bg-blue-50 rounded-lg p-6 mb-6">
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">Student Bookings</h3>
+        <div id="staff-bookings-list" class="space-y-4">
+         <p class="text-gray-500 text-center py-4">Loading bookings...</p>
+        </div>
+      </div>
+      <!-- Recent Activity -->
       <div class="bg-gray-50 rounded-lg p-6">
        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
        <div id="recent-activity" class="space-y-3"><!-- Recent activity will appear here -->
@@ -696,6 +710,7 @@
         let currentUserRole = 'student';
         let allData = [];
         let isLoading = false;
+        let currentUser = null; // Store logged-in user info
 
         // Default configuration
         const defaultConfig = {
@@ -715,6 +730,445 @@
                 updateDashboard();
             }
         };
+
+        // ========== AUTHENTICATION FUNCTIONS ==========
+        
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Validation helpers
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return false;
+            }
+            
+            // Check for common educational domains (optional - can be customized)
+            const eduDomains = ['.edu', '.ac.', 'student', 'university', 'college'];
+            const isEduEmail = eduDomains.some(domain => email.toLowerCase().includes(domain));
+            
+            // For now, just warn if not edu email but still allow it
+            // If you want to enforce edu emails only, uncomment the next line:
+            // return isEduEmail;
+            
+            return true;
+        }
+        
+        function validateStudentEmail(email) {
+            // Strict validation for ALU student email addresses only
+            const emailRegex = /^[^\s@]+@alustudent\.com$/i;
+            
+            if (!emailRegex.test(email)) {
+                return { valid: false, message: 'Please use your ALU student email (@alustudent.com)' };
+            }
+            
+            return { valid: true };
+        }
+
+        function validatePassword(password) {
+            if (password.length < 8) {
+                return { valid: false, message: 'Password must be at least 8 characters' };
+            }
+            if (!/[A-Z]/.test(password)) {
+                return { valid: false, message: 'Password must contain at least one uppercase letter' };
+            }
+            if (!/[a-z]/.test(password)) {
+                return { valid: false, message: 'Password must contain at least one lowercase letter' };
+            }
+            if (!/[0-9]/.test(password)) {
+                return { valid: false, message: 'Password must contain at least one number' };
+            }
+            return { valid: true };
+        }
+
+        function validatePhone(phone) {
+            // Remove spaces, dashes, parentheses
+            const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+            // Check if it's 10 digits (US format) or 11 digits (with country code)
+            return /^[0-9]{10,11}$/.test(cleaned);
+        }
+
+        // Show/hide modals
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        function hideLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-form').reset();
+        }
+
+        function showRegisterModal() {
+            document.getElementById('register-modal').classList.remove('hidden');
+        }
+
+        function hideRegisterModal() {
+            document.getElementById('register-modal').classList.add('hidden');
+            document.getElementById('register-form').reset();
+        }
+
+        function switchToRegister() {
+            hideLoginModal();
+            showRegisterModal();
+        }
+
+        function switchToLogin() {
+            hideRegisterModal();
+            showLoginModal();
+        }
+
+        // Handle login - function to be called after DOM loads
+        function attachAuthListeners() {
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('login-submit-btn');
+            const btnText = document.getElementById('login-btn-text');
+            const loading = document.getElementById('login-loading');
+            
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            // Validation
+            if (!username || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showToast('Username must be at least 3 characters', 'error');
+                return;
+            }
+            
+            btn.disabled = true;
+            btnText.textContent = 'Logging in...';
+            loading.classList.remove('hidden');
+            
+            // Setup timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+            
+            try {
+                const response = await fetch('/users/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ username, password }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                // Check HTTP status
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showToast('Invalid username or password', 'error');
+                    } else if (response.status === 429) {
+                        showToast('Too many login attempts. Please try again later.', 'error');
+                    } else if (response.status >= 500) {
+                        showToast('Server error. Please try again later.', 'error');
+                    } else {
+                        const data = await response.json().catch(() => ({}));
+                        showToast(data.error || 'Login failed. Please try again.', 'error');
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    currentUser = {
+                        username: username,
+                        role: data.role
+                    };
+                    updateAuthUI();
+                    hideLoginModal();
+                    showToast('Welcome back! Logged in successfully.', 'success');
+                } else {
+                    showToast(data.error || 'Login failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                
+                if (error.name === 'AbortError') {
+                    showToast('Request timed out. Please check your connection.', 'error');
+                } else if (error.message.includes('Failed to fetch')) {
+                    showToast('Network error. Please check your internet connection.', 'error');
+                } else {
+                    showToast('An unexpected error occurred. Please try again.', 'error');
+                }
+                console.error('Login error:', error);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Login';
+                loading.classList.add('hidden');
+            }
+        });
+
+            // Register form
+            document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('register-submit-btn');
+            const btnText = document.getElementById('register-btn-text');
+            const loading = document.getElementById('register-loading');
+            
+            // Get form values
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const firstName = document.getElementById('register-firstname').value.trim();
+            const lastName = document.getElementById('register-lastname').value.trim();
+            const studentId = document.getElementById('register-studentid').value.trim();
+            const phone = document.getElementById('register-phone').value.trim();
+            const password = document.getElementById('register-password').value;
+            const password2 = document.getElementById('register-password2').value;
+            
+            // Validation - only check required fields
+            if (!username || !email || !firstName || !lastName || !password || !password2) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showToast('Username must be at least 3 characters', 'error');
+                return;
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showToast('Username can only contain letters, numbers, and underscores', 'error');
+                return;
+            }
+            
+            // Validate student email
+            const emailValidation = validateStudentEmail(email);
+            if (!emailValidation.valid) {
+                showToast(emailValidation.message, 'error');
+                return;
+            }
+            
+            // Optional: validate student ID only if provided
+            if (studentId && studentId.length < 5) {
+                showToast('Student ID must be at least 5 characters', 'error');
+                return;
+            }
+            
+            // Optional: validate phone only if provided
+            if (phone && !validatePhone(phone)) {
+                showToast('Please enter a valid phone number (10-11 digits)', 'error');
+                return;
+            }
+            
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.valid) {
+                showToast(passwordValidation.message, 'error');
+                return;
+            }
+            
+            if (password !== password2) {
+                showToast('Passwords do not match!', 'error');
+                return;
+            }
+            
+            btn.disabled = true;
+            btnText.textContent = 'Creating account...';
+            loading.classList.remove('hidden');
+            
+            const formData = {
+                username: username,
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                student_id: studentId,
+                phone_number: phone,
+                password: password,
+                password2: password2,
+                role: 'student'
+            };
+            
+            // Setup timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+            
+            try {
+                const response = await fetch('/users/api/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(formData),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                console.log('Registration response status:', response.status);
+                
+                // Check HTTP status
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        const data = await response.json().catch(() => ({}));
+                        // Handle specific validation errors
+                        if (data.errors) {
+                            const errorMessages = Object.entries(data.errors)
+                                .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+                                .join('\n');
+                            showToast(errorMessages || data.error || 'Validation failed', 'error');
+                        } else {
+                            showToast(data.error || 'Invalid registration data', 'error');
+                        }
+                    } else if (response.status === 409) {
+                        showToast('Username or email already exists', 'error');
+                    } else if (response.status >= 500) {
+                        showToast('Server error. Please try again later.', 'error');
+                    } else {
+                        const data = await response.json().catch(() => ({}));
+                        showToast(data.error || 'Registration failed. Please try again.', 'error');
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('Registration response data:', data);
+                
+                if (data.ok) {
+                    currentUser = {
+                        username: formData.username,
+                        role: data.role
+                    };
+                    updateAuthUI();
+                    hideRegisterModal();
+                    showToast('Account created successfully! Welcome to MindBridge.', 'success');
+                } else {
+                    showToast(data.error || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                
+                if (error.name === 'AbortError') {
+                    showToast('Request timed out. Please check your connection.', 'error');
+                } else if (error.message.includes('Failed to fetch')) {
+                    showToast('Network error. Please check your internet connection.', 'error');
+                } else {
+                    showToast('An unexpected error occurred. Please try again.', 'error');
+                }
+                console.error('Registration error:', error);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Create Account';
+                loading.classList.add('hidden');
+            }
+        });
+        }
+
+        // Handle logout
+        async function handleLogout() {
+            // Setup timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            try {
+                const response = await fetch('/users/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                currentUser = null;
+                updateAuthUI();
+                showSection('home');
+                showToast('Logged out successfully.', 'success');
+            } catch (error) {
+                clearTimeout(timeoutId);
+                console.error('Logout error:', error);
+                // Even if server request fails, clear local state
+                currentUser = null;
+                updateAuthUI();
+                showSection('home');
+                showToast('Logged out.', 'success');
+            }
+        }
+
+        // Update UI based on auth state
+        function updateAuthUI() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            const userName = document.getElementById('user-name');
+            const userInitial = document.getElementById('user-initial');
+            
+            if (currentUser) {
+                // User is logged in
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                userName.textContent = currentUser.username;
+                userInitial.textContent = currentUser.username.charAt(0).toUpperCase();
+                currentUserRole = currentUser.role;
+                
+                // Pre-fill booking form if elements exist
+                const studentNameInput = document.getElementById('student-name');
+                const studentEmailInput = document.getElementById('student-email');
+                if (studentNameInput && !studentNameInput.value) {
+                    studentNameInput.value = currentUser.username;
+                }
+                if (studentEmailInput && !studentEmailInput.value) {
+                    studentEmailInput.value = currentUser.username + '@alustudent.com';
+                }
+                
+                // Show/hide role-based features
+                const addBookBtn = document.getElementById('add-book-btn');
+                const studentDashboard = document.getElementById('student-dashboard');
+                const staffDashboard = document.getElementById('staff-dashboard');
+                
+                if (addBookBtn && studentDashboard && staffDashboard) {
+                    if (currentUserRole === 'wellness_team') {
+                        addBookBtn.classList.remove('hidden');
+                        studentDashboard.classList.add('hidden');
+                        staffDashboard.classList.remove('hidden');
+                    } else {
+                        addBookBtn.classList.add('hidden');
+                        studentDashboard.classList.remove('hidden');
+                        staffDashboard.classList.add('hidden');
+                    }
+                }
+            } else {
+                // User is not logged in
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+            }
+        }
+
+        // Check if user needs to be logged in for certain actions
+        function requireAuth(action) {
+            if (!currentUser) {
+                showToast('Please login to ' + action, 'error');
+                showLoginModal();
+                return false;
+            }
+            return true;
+        }
+
+        // ========== END AUTHENTICATION FUNCTIONS ==========
 
         // Initialize SDK and app
         async function initializeApp() {
@@ -794,6 +1248,12 @@
 
                 // Setup event listeners
                 setupEventListeners();
+                
+                // Attach authentication event listeners
+                attachAuthListeners();
+                
+                // Initialize authentication UI
+                updateAuthUI();
 
             } catch (error) {
                 console.error("Failed to initialize app:", error);
@@ -838,7 +1298,19 @@
             } else if (sectionName === 'stories') {
                 renderStories();
             } else if (sectionName === 'dashboard') {
-                updateDashboard();
+                // Show appropriate dashboard based on user role
+                const studentDash = document.getElementById('student-dashboard');
+                const staffDash = document.getElementById('staff-dashboard');
+                
+                if (currentUser && currentUser.role === 'wellness_team') {
+                    if (studentDash) studentDash.classList.add('hidden');
+                    if (staffDash) staffDash.classList.remove('hidden');
+                } else {
+                    if (studentDash) studentDash.classList.remove('hidden');
+                    if (staffDash) staffDash.classList.add('hidden');
+                }
+                
+                loadBookings();
             }
         }
 
@@ -868,8 +1340,7 @@
         async function handleBookingSubmit(e) {
             e.preventDefault();
             
-            if (allData.length >= 999) {
-                showToast("Maximum limit of 999 bookings reached. Please contact support.", "error");
+            if (!requireAuth('book a session')) {
                 return;
             }
             
@@ -882,38 +1353,318 @@
             btnText.textContent = 'Booking...';
             loading.classList.remove('hidden');
             
-            try {
-                const formData = {
-                    id: Date.now().toString(),
-                    type: 'booking',
-                    title: document.getElementById('student-name').value + ' - Session',
-                    content: document.getElementById('session-notes').value || 'No additional notes',
-                    author: document.getElementById('student-name').value,
-                    student_email: document.getElementById('student-email').value,
-                    specialist: document.getElementById('specialist-select').value,
-                    date: document.getElementById('session-date').value,
-                    time_slot: document.getElementById('session-time').value,
-                    status: 'pending',
-                    category: 'booking',
-                    anonymous: false
-                };
-
-                const result = await window.dataSdk.create(formData);
-                
-                if (result.isOk) {
-                    showToast("Session booked successfully! You'll receive a confirmation email soon.", "success");
-                    document.getElementById('booking-form').reset();
-                } else {
-                    showToast("Failed to book session. Please try again.", "error");
+            // Prepare booking data
+            const timeValue = document.getElementById('session-time').value;
+            // Convert "09:00 AM" to 24-hour "09:00:00" format
+            let convertedTime = timeValue;
+            if (timeValue.includes('AM') || timeValue.includes('PM')) {
+                const timeParts = timeValue.match(/(\d+):(\d+)\s*(AM|PM)/i);
+                if (timeParts) {
+                    let hours = parseInt(timeParts[1]);
+                    const minutes = timeParts[2];
+                    const period = timeParts[3].toUpperCase();
+                    
+                    if (period === 'PM' && hours !== 12) hours += 12;
+                    if (period === 'AM' && hours === 12) hours = 0;
+                    
+                    convertedTime = `${hours.toString().padStart(2, '0')}:${minutes}:00`;
                 }
+            } else {
+                convertedTime = timeValue + ':00';
+            }
+            
+            const bookingData = {
+                full_name: document.getElementById('student-name').value,
+                email: document.getElementById('student-email').value,
+                phone_number: '+250000000000', // Default phone
+                date: document.getElementById('session-date').value,
+                time: convertedTime,
+                session_type: 'individual',
+                reason: document.getElementById('specialist-select').value,
+                additional_notes: document.getElementById('session-notes').value
+            };
+            
+            try {
+                console.log('Sending booking data:', bookingData);
+                const response = await fetch('/api/bookings/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                if (!response.ok) {
+                    let error;
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/json')) {
+                        error = await response.json();
+                        console.error('Booking error response:', error);
+                        console.error('Full error object:', JSON.stringify(error, null, 2));
+                        
+                        // Build detailed error message
+                        let errorMessage = 'Booking failed: ';
+                        if (typeof error === 'object') {
+                            if (error.detail) {
+                                errorMessage += error.detail;
+                            } else {
+                                // Show all field errors
+                                errorMessage += Object.entries(error)
+                                    .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+                                    .join('; ');
+                            }
+                        } else {
+                            errorMessage += error || 'Unknown error';
+                        }
+                        throw new Error(errorMessage);
+                    } else {
+                        // Server returned HTML error page
+                        const errorText = await response.text();
+                        console.error('Server error (HTML):', errorText.substring(0, 500));
+                        throw new Error(`Server error (${response.status}). Check browser console and Django terminal for details.`);
+                    }
+                }
+                
+                const data = await response.json();
+                showToast("Session booked successfully! You'll receive a confirmation once approved.", "success");
+                document.getElementById('booking-form').reset();
+                
+                // Refresh bookings if on dashboard
+                if (currentSection === 'dashboard') {
+                    await loadBookings();
+                }
+                
             } catch (error) {
-                showToast("An error occurred. Please try again.", "error");
+                showToast(error.message || 'Failed to book session. Please try again.', 'error');
+                console.error('Booking error:', error);
             } finally {
-                // Reset button state
                 btn.disabled = false;
                 btnText.textContent = 'Book Session';
                 loading.classList.add('hidden');
             }
+        }
+        
+        // Load user's bookings
+        async function loadBookings() {
+            if (!currentUser) return;
+            
+            console.log('Loading bookings for user:', currentUser);
+            
+            try {
+                const response = await fetch('/api/bookings/', {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load bookings');
+                
+                const bookings = await response.json();
+                console.log('Loaded bookings:', bookings);
+                displayBookings(bookings.results || bookings);
+                
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                showToast('Failed to load bookings', 'error');
+            }
+        }
+        
+        // Display bookings in dashboard
+        function displayBookings(bookings) {
+            // Determine which container to use based on user role
+            const isWellnessTeam = currentUser && currentUser.role === 'wellness_team';
+            const containerId = isWellnessTeam ? 'staff-bookings-list' : 'student-bookings-list';
+            const container = document.getElementById(containerId);
+            
+            if (!container) {
+                console.error('Bookings container not found:', containerId);
+                return;
+            }
+            
+            console.log('Displaying bookings:', bookings);
+            console.log('Current user:', currentUser);
+            console.log('Using container:', containerId);
+            
+            if (bookings.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">No bookings yet. Book your first session!</p>';
+                return;
+            }
+            
+            console.log('Is wellness team?', isWellnessTeam);
+            
+            container.innerHTML = bookings.map(booking => {
+                console.log('Rendering booking:', booking);
+                return `
+                <div class="bg-white rounded-lg shadow p-6 border-l-4 ${getStatusColor(booking.status)}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">${formatDate(booking.date)} at ${formatTime(booking.time)}</h4>
+                            <p class="text-sm text-gray-600">${booking.session_type}</p>
+                            ${isWellnessTeam ? `<p class="text-sm text-blue-600 mt-1">Student: ${booking.student_name || booking.student_username}</p>` : ''}
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(booking.status)}">
+                            ${booking.status.toUpperCase()}
+                        </span>
+                    </div>
+                    <p class="text-gray-700 mb-2"><strong>Reason:</strong> ${booking.reason}</p>
+                    ${booking.additional_notes ? `<p class="text-gray-600 text-sm mb-2">${booking.additional_notes}</p>` : ''}
+                    
+                    ${booking.meet_link ? `
+                        <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                                    </svg>
+                                    <span class="text-green-800 font-medium">Google Meet Ready</span>
+                                </div>
+                                <a href="${booking.meet_link}" target="_blank" 
+                                   class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
+                                    Join Meeting
+                                </a>
+                            </div>
+                        </div>
+                    ` : booking.status === 'approved' ? `
+                        <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <p class="text-blue-800 text-sm">Meeting link will be provided shortly</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${isWellnessTeam && booking.status === 'pending' ? `
+                        <div class="mt-4 flex gap-2">
+                            <button onclick="approveBooking(${booking.id})" 
+                                    class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
+                                ✓ Approve & Generate Meet Link
+                            </button>
+                            <button onclick="rejectBooking(${booking.id})" 
+                                    class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    ` : !isWellnessTeam && (booking.status === 'pending' || booking.status === 'approved') ? `
+                        <button onclick="cancelBooking(${booking.id})" 
+                                class="mt-4 text-red-600 hover:text-red-800 text-sm font-medium">
+                            Cancel Booking
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            }).join('');
+        }
+        
+        // Cancel booking
+        async function cancelBooking(bookingId) {
+            if (!confirm('Are you sure you want to cancel this booking?')) return;
+            
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/cancel/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to cancel booking');
+                
+                showToast('Booking cancelled successfully', 'success');
+                await loadBookings();
+                
+            } catch (error) {
+                showToast(error.message || 'Failed to cancel booking', 'error');
+                console.error('Cancel error:', error);
+            }
+        }
+        
+        // Approve booking (Wellness Team only)
+        async function approveBooking(bookingId) {
+            if (!confirm('Approve this booking? A Google Meet link will be generated if credentials are configured.')) return;
+            
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/approve/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to approve booking');
+                
+                const data = await response.json();
+                if (data.meet_link) {
+                    showToast('Booking approved! Google Meet link generated successfully.', 'success');
+                } else {
+                    showToast('Booking approved! (Google Meet link generation skipped - credentials not configured)', 'success');
+                }
+                await loadBookings();
+                
+            } catch (error) {
+                showToast(error.message || 'Failed to approve booking', 'error');
+                console.error('Approve error:', error);
+            }
+        }
+        
+        // Reject booking (Wellness Team only)
+        async function rejectBooking(bookingId) {
+            const reason = prompt('Please provide a reason for rejection (optional):');
+            if (reason === null) return; // User cancelled
+            
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}/reject/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ notes: reason })
+                });
+                
+                if (!response.ok) throw new Error('Failed to reject booking');
+                
+                showToast('Booking rejected', 'success');
+                await loadBookings();
+                
+            } catch (error) {
+                showToast(error.message || 'Failed to reject booking', 'error');
+                console.error('Reject error:', error);
+            }
+        }
+        
+        // Helper functions
+        function getStatusColor(status) {
+            const colors = {
+                'pending': 'border-yellow-500',
+                'approved': 'border-green-500',
+                'rejected': 'border-red-500',
+                'completed': 'border-blue-500',
+                'cancelled': 'border-gray-500'
+            };
+            return colors[status] || 'border-gray-500';
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': 'bg-yellow-100 text-yellow-800',
+                'approved': 'bg-green-100 text-green-800',
+                'rejected': 'bg-red-100 text-red-800',
+                'completed': 'bg-blue-100 text-blue-800',
+                'cancelled': 'bg-gray-100 text-gray-800'
+            };
+            return badges[status] || 'bg-gray-100 text-gray-800';
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
         }
 
         // Library functions
@@ -1246,5 +1997,94 @@
         // Initialize app when DOM is loaded
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99652912814caa15',t:'MTc2MTc2Njk5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+  <!-- Login Modal -->
+  <div id="login-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8">
+    <div class="flex justify-between items-center mb-6">
+     <h3 class="text-2xl font-bold text-gray-900">Welcome Back</h3>
+     <button onclick="hideLoginModal()" class="text-gray-400 hover:text-gray-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+     </button>
+    </div>
+    <form id="login-form" class="space-y-4">
+     <div>
+      <label for="login-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+      <input type="text" id="login-username" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your username">
+     </div>
+     <div>
+      <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+      <input type="password" id="login-password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter your password">
+     </div>
+     <button type="submit" id="login-submit-btn" class="w-full bg-blue-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center">
+      <span id="login-btn-text">Login</span>
+      <div id="login-loading" class="loading-spinner ml-2 hidden"></div>
+     </button>
+    </form>
+    <div class="mt-6 text-center">
+     <p class="text-sm text-gray-600">Don't have an account? <button onclick="switchToRegister()" class="text-blue-600 hover:text-blue-800 font-semibold">Register here</button></p>
+    </div>
+   </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="register-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+     <h3 class="text-2xl font-bold text-gray-900">Create Account</h3>
+     <button onclick="hideRegisterModal()" class="text-gray-400 hover:text-gray-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+     </button>
+    </div>
+    <form id="register-form" class="space-y-4">
+     <div class="grid md:grid-cols-2 gap-4">
+      <div>
+       <label for="register-firstname" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+       <input type="text" id="register-firstname" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+      <div>
+       <label for="register-lastname" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+       <input type="text" id="register-lastname" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+     </div>
+     <div>
+      <label for="register-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+      <input type="text" id="register-username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+     </div>
+     <div>
+      <label for="register-email" class="block text-sm font-medium text-gray-700 mb-2">ALU Student Email</label>
+      <input type="email" id="register-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="yourname@alustudent.com">
+     </div>
+     <div>
+      <label for="register-studentid" class="block text-sm font-medium text-gray-700 mb-2">Student ID <span class="text-gray-500 text-xs">(Optional)</span></label>
+      <input type="text" id="register-studentid" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter if you know it">
+     </div>
+     <div>
+      <label for="register-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number <span class="text-gray-500 text-xs">(Optional)</span></label>
+      <input type="tel" id="register-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., 1234567890">
+     </div>
+     <div>
+      <label for="register-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+      <input type="password" id="register-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+     </div>
+     <div>
+      <label for="register-password2" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+      <input type="password" id="register-password2" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+     </div>
+     <button type="submit" id="register-submit-btn" class="w-full bg-blue-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center">
+      <span id="register-btn-text">Create Account</span>
+      <div id="register-loading" class="loading-spinner ml-2 hidden"></div>
+     </button>
+    </form>
+    <div class="mt-6 text-center">
+     <p class="text-sm text-gray-600">Already have an account? <button onclick="switchToLogin()" class="text-blue-600 hover:text-blue-800 font-semibold">Login here</button></p>
+    </div>
+   </div>
+  </div>
+
+</body>
 </html>

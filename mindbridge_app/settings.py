@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Third party apps
+    'rest_framework',
+    
     # MINDBRIDGE Apps
     'users.apps.UsersConfig',
     'bookings.apps.BookingsConfig',
@@ -44,12 +47,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'mindbridge.urls'
+ROOT_URLCONF = 'mindbridge_app.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        # Serve frontend static HTML (index.html) from the frontend/ folder
+        'DIRS': [BASE_DIR / 'frontend'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,15 +66,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mindbridge.wsgi.application'
+WSGI_APPLICATION = 'mindbridge_app.wsgi.application'
 
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME', default='mindbridge_db'),
-        'USER': config('DB_USER', default='root'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
+        'USER': config('DB_USER', default='kellia'),
+        'PASSWORD': config('DB_PASSWORD', default='pass123'),
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='3306'),
         'OPTIONS': {
@@ -108,7 +112,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+FRONTEND_DIR = BASE_DIR / 'frontend'
+STATICFILES_DIRS = [FRONTEND_DIR]
 
 # Media files
 MEDIA_URL = '/media/'
@@ -121,3 +126,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Django REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
