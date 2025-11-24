@@ -6,12 +6,27 @@ class Post(models.Model):
     """
     Model for anonymous posts in the virtual safe space.
     """
+    CATEGORY_CHOICES = [
+        ('overcoming_anxiety', 'Overcoming Anxiety'),
+        ('academic_stress', 'Academic Stress'),
+        ('personal_growth', 'Personal Growth'),
+        ('relationships', 'Relationships'),
+        ('self_care', 'Self Care'),
+        ('general_inspiration', 'General Inspiration'),
+    ]
+    
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='posts'
     )
     content = models.TextField()
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        default='general_inspiration',
+        help_text="Story category"
+    )
     anonymous = models.BooleanField(default=True, help_text="Display this post anonymously")
     is_approved = models.BooleanField(default=False, help_text="Must be approved by wellness team")
     created_at = models.DateTimeField(auto_now_add=True)

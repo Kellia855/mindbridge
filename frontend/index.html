@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
  <head>
   <meta charset="UTF-8">
@@ -85,7 +85,7 @@
       </div>
       <h1 class="text-xl font-bold" id="platform-title">MindBridge</h1>
      </div>
-     <div class="hidden md:flex space-x-6"><button onclick="showSection('home')" class="nav-btn hover:text-red-300 transition-colors">Home</button> <button onclick="showSection('booking')" class="nav-btn hover:text-red-300 transition-colors">Book Session</button> <button onclick="showSection('library')" class="nav-btn hover:text-red-300 transition-colors">Library</button> <button onclick="showSection('stories')" class="nav-btn hover:text-red-300 transition-colors">Stories</button> <button onclick="showSection('dashboard')" class="nav-btn hover:text-red-300 transition-colors">Dashboard</button>
+     <div class="hidden md:flex space-x-6"><button onclick="showSection('home')" class="nav-btn hover:text-red-300 transition-colors">Home</button> <button id="booking-nav-btn" onclick="showSection('booking')" class="nav-btn hover:text-red-300 transition-colors">Book Session</button> <button onclick="showSection('library')" class="nav-btn hover:text-red-300 transition-colors">Library</button> <button onclick="showSection('events')" class="nav-btn hover:text-red-300 transition-colors">Events</button> <button id="stories-nav-btn" onclick="showSection('stories')" class="nav-btn hover:text-red-300 transition-colors">Stories</button> <button onclick="showSection('dashboard')" class="nav-btn hover:text-red-300 transition-colors">Dashboard</button>
      </div>
      <div class="flex items-center space-x-4">
       <!-- Auth buttons (shown when not logged in) -->
@@ -135,7 +135,7 @@
          </div>
          <div class="flex items-center">
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg> 24/7 Support
+          </svg>Professional Support
          </div>
         </div>
        </div>
@@ -298,7 +298,7 @@
          <div class="grid md:grid-cols-2 gap-4">
           <div><label for="session-date" class="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label> <input type="date" id="session-date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           </div>
-          <div><label for="session-time" class="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label> <select id="session-time" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select time slot</option> <option value="09:00 AM">09:00 AM</option> <option value="10:00 AM">10:00 AM</option> <option value="11:00 AM">11:00 AM</option> <option value="02:00 PM">02:00 PM</option> <option value="03:00 PM">03:00 PM</option> <option value="04:00 PM">04:00 PM</option> </select>
+          <div><label for="session-time" class="block text-sm font-medium text-gray-700 mb-2">Preferred Time (40 min session)</label> <select id="session-time" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select time slot</option> <option value="09:00 AM">09:00 AM - 09:40 AM</option> <option value="10:00 AM">10:00 AM - 10:40 AM</option> <option value="11:00 AM">11:00 AM - 11:40 AM</option> <option value="02:00 PM">02:00 PM - 02:40 PM</option> <option value="03:00 PM">03:00 PM - 03:40 PM</option> <option value="04:00 PM">04:00 PM - 04:40 PM</option> </select>
           </div>
          </div>
          <div><label for="session-notes" class="block text-sm font-medium text-gray-700 mb-2">Additional Notes (Optional)</label> <textarea id="session-notes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Any specific concerns or preferences..."></textarea>
@@ -399,9 +399,8 @@
       <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Featured Books</h2>
       <div class="grid md:grid-cols-3 gap-8">
        <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
-        <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-         <svg viewbox="0 0 200 250" class="w-32 h-40"><rect x="20" y="20" width="160" height="210" rx="8" fill="white" opacity="0.9" /> <rect x="30" y="40" width="140" height="4" fill="#3b82f6" /> <rect x="30" y="50" width="100" height="3" fill="#6b7280" /> <rect x="30" y="60" width="120" height="3" fill="#6b7280" /> <circle cx="100" cy="130" r="30" fill="#3b82f6" opacity="0.2" /> <path d="M85 130 Q100 115 115 130 Q100 145 85 130" fill="#3b82f6" />
-         </svg>
+        <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+         <img src="/static/images/happiness-hypothesis.jpg" alt="The Happiness Hypothesis" class="h-full w-auto object-contain">
         </div>
         <div class="p-6">
          <h3 class="font-bold text-gray-900 mb-2">The Happiness Hypothesis</h3>
@@ -410,9 +409,8 @@
         </div>
        </div>
        <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
-        <div class="h-48 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-         <svg viewbox="0 0 200 250" class="w-32 h-40"><rect x="20" y="20" width="160" height="210" rx="8" fill="white" opacity="0.9" /> <rect x="30" y="40" width="140" height="4" fill="#dc2626" /> <rect x="30" y="50" width="110" height="3" fill="#6b7280" /> <rect x="30" y="60" width="130" height="3" fill="#6b7280" /> <circle cx="100" cy="130" r="25" fill="#dc2626" opacity="0.2" /> <rect x="90" y="120" width="20" height="20" fill="#dc2626" />
-         </svg>
+        <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+         <img src="/static/images/atomic-habits.jpg" alt="Atomic Habits" class="h-full w-auto object-contain">
         </div>
         <div class="p-6">
          <h3 class="font-bold text-gray-900 mb-2">Atomic Habits</h3>
@@ -421,9 +419,8 @@
         </div>
        </div>
        <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
-        <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-         <svg viewbox="0 0 200 250" class="w-32 h-40"><rect x="20" y="20" width="160" height="210" rx="8" fill="white" opacity="0.9" /> <rect x="30" y="40" width="140" height="4" fill="#10b981" /> <rect x="30" y="50" width="90" height="3" fill="#6b7280" /> <rect x="30" y="60" width="110" height="3" fill="#6b7280" /> <circle cx="100" cy="130" r="20" fill="#10b981" opacity="0.3" /> <path d="M90 130 L100 120 L110 130 L100 140 Z" fill="#10b981" />
-         </svg>
+        <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+         <img src="/static/images/mindfulness-beginners.jpg" alt="Mindfulness for Beginners" class="h-full w-auto object-contain">
         </div>
         <div class="p-6">
          <h3 class="font-bold text-gray-900 mb-2">Mindfulness for Beginners</h3>
@@ -500,6 +497,106 @@
       </div>
      </div>
     </div>
+   </section><!-- Events Section -->
+   <section id="events-section" class="section-content hidden"><!-- Events Hero Section -->
+    <div class="relative bg-gradient-to-r from-purple-900 to-indigo-800 py-20">
+     <div class="absolute inset-0 opacity-10">
+      <svg viewbox="0 0 1200 400" class="w-full h-full"><defs>
+        <pattern id="events-pattern" x="0" y="0" width="100" height="100" patternunits="userSpaceOnUse">
+         <circle cx="25" cy="25" r="2" fill="white" opacity="0.3" />
+         <circle cx="75" cy="75" r="1.5" fill="white" opacity="0.2" />
+         <circle cx="50" cy="50" r="1" fill="white" opacity="0.4" />
+        </pattern>
+       </defs> <rect width="100%" height="100%" fill="url(#events-pattern)" />
+      </svg>
+     </div>
+     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center text-white">
+       <h1 class="text-4xl lg:text-5xl font-bold mb-4">Wellness Events Calendar</h1>
+       <p class="text-xl opacity-90 max-w-3xl mx-auto">Join workshops, seminars, and wellness activities. Connect with your community and grow together.</p>
+      </div>
+     </div>
+    </div><!-- Events Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+     <!-- Calendar View (Compact) -->
+     <div class="mb-12">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-3xl mx-auto">
+       <!-- Calendar Header -->
+       <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4">
+        <div class="flex justify-between items-center">
+         <button id="prev-month-btn" onclick="changeMonth(-1)" class="text-white hover:bg-white/20 rounded-lg p-1.5 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+         </button>
+         <h2 id="calendar-month-year" class="text-xl font-bold text-white"></h2>
+         <button id="next-month-btn" onclick="changeMonth(1)" class="text-white hover:bg-white/20 rounded-lg p-1.5 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+         </button>
+        </div>
+       </div>
+       
+       <!-- Calendar Grid -->
+       <div class="p-4">
+        <!-- Day Headers -->
+        <div class="grid grid-cols-7 gap-1 mb-1">
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Sun</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Mon</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Tue</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Wed</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Thu</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Fri</div>
+         <div class="text-center text-xs font-semibold text-gray-600 py-1">Sat</div>
+        </div>
+        
+        <!-- Calendar Days -->
+        <div id="calendar-days" class="grid grid-cols-7 gap-1">
+         <!-- Days will be populated by JavaScript -->
+        </div>
+       </div>
+      </div>
+     </div>
+     
+     <!-- Upcoming Events -->
+     <div class="mb-16">
+      <div class="flex justify-between items-center mb-8">
+       <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Event Details</h2>
+        <p class="text-gray-600" id="events-filter-text">Showing all upcoming events</p>
+       </div>
+      </div>
+      
+      <!-- Events Grid -->
+      <div id="events-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+       <!-- Events will be loaded here -->
+       <div class="col-span-full text-center py-12">
+        <div class="loading-spinner mx-auto mb-4"></div>
+        <p class="text-gray-500">Loading events...</p>
+       </div>
+      </div>
+      
+      <!-- No Events Message -->
+      <div id="no-events-message" class="hidden text-center py-16">
+       <div class="mb-6">
+        <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-semibold text-gray-400 mb-2">No events for this date</h3>
+       <p class="text-gray-400"><button onclick="clearDateFilter()" class="text-purple-600 hover:underline">Show all events</button></p>
+      </div>
+     </div>
+     
+     <!-- My Registrations (for students) -->
+     <div id="my-registrations-section" class="bg-blue-50 rounded-2xl p-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">My Registered Events</h2>
+      <div id="my-registrations-list" class="space-y-4">
+       <p class="text-gray-500">You haven't registered for any events yet.</p>
+      </div>
+     </div>
+    </div>
    </section><!-- Stories Section -->
    <section id="stories-section" class="section-content hidden"><!-- Stories Hero Section -->
     <div class="relative bg-gradient-to-r from-gray-900 to-gray-700 py-20">
@@ -567,7 +664,7 @@
       <div class="p-8"><!-- Story Categories -->
        <div class="mb-8">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Browse by Category</h3>
-        <div class="flex flex-wrap gap-3"><button class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">Overcoming Anxiety</button> <button class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium hover:bg-green-200 transition-colors">Academic Stress</button> <button class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors">Personal Growth</button> <button class="px-4 py-2 bg-pink-100 text-pink-800 rounded-full text-sm font-medium hover:bg-pink-200 transition-colors">Relationships</button> <button class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors">Self Care</button> <button class="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors">General Inspiration</button>
+        <div class="flex flex-wrap gap-3"><button onclick="filterStoriesByCategory('')" class="story-category-btn px-4 py-2 bg-gray-200 text-gray-800 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors" data-category="">All Stories</button> <button onclick="filterStoriesByCategory('overcoming_anxiety')" class="story-category-btn px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors" data-category="overcoming_anxiety">Overcoming Anxiety</button> <button onclick="filterStoriesByCategory('academic_stress')" class="story-category-btn px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium hover:bg-green-200 transition-colors" data-category="academic_stress">Academic Stress</button> <button onclick="filterStoriesByCategory('personal_growth')" class="story-category-btn px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors" data-category="personal_growth">Personal Growth</button> <button onclick="filterStoriesByCategory('relationships')" class="story-category-btn px-4 py-2 bg-pink-100 text-pink-800 rounded-full text-sm font-medium hover:bg-pink-200 transition-colors" data-category="relationships">Relationships</button> <button onclick="filterStoriesByCategory('self_care')" class="story-category-btn px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors" data-category="self_care">Self Care</button> <button onclick="filterStoriesByCategory('general_inspiration')" class="story-category-btn px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors" data-category="general_inspiration">General Inspiration</button>
         </div>
        </div><!-- Stories Feed -->
        <div id="stories-feed" class="space-y-8"><!-- Stories will be populated here -->
@@ -584,8 +681,8 @@
      </div><!-- Anonymous & Safe -->
      <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-8">
       <div class="text-center mb-8">
-       <h2 class="text-3xl font-bold text-gray-900 mb-4">Your Privacy Matters</h2>
-       <p class="text-lg text-gray-600 max-w-3xl mx-auto">We believe in creating a safe space where you can share authentically without fear of judgment.</p>
+       <h2 class="text-3xl font-bold text-gray-900 mb-4">Your Privacy, Your Choice</h2>
+       <p class="text-lg text-gray-600 max-w-3xl mx-auto">Share anonymously or with your name - you decide. We create a safe space for authentic sharing.</p>
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
        <div class="text-center">
@@ -593,8 +690,8 @@
          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
          </svg>
         </div>
-        <h3 class="font-semibold text-gray-900 mb-2">100% Anonymous</h3>
-        <p class="text-sm text-gray-600">No personal information is ever collected or stored</p>
+        <h3 class="font-semibold text-gray-900 mb-2">Your Choice</h3>
+        <p class="text-sm text-gray-600">Post anonymously or share with your name - you decide</p>
        </div>
        <div class="text-center">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -628,16 +725,6 @@
     <div class="bg-white rounded-xl shadow-lg p-8">
      <h2 class="text-3xl font-bold text-gray-900 mb-6">Dashboard</h2><!-- Student Dashboard -->
      <div id="student-dashboard">
-      <div class="grid md:grid-cols-1 gap-6 mb-8">
-       <div class="bg-blue-50 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-blue-900 mb-4">My Bookings</h3>
-        <div id="student-bookings-list" class="space-y-4">
-         <p class="text-gray-500 text-center py-4">Loading bookings...</p>
-        </div>
-       </div>
-      </div>
-     </div><!-- Staff Dashboard -->
-     <div id="staff-dashboard" class="hidden">
       <div class="grid md:grid-cols-3 gap-6 mb-8">
        <div class="bg-green-50 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-green-900 mb-2">Total Sessions</h3>
@@ -652,11 +739,43 @@
         <p class="text-3xl font-bold text-orange-700" id="total-books">0</p>
        </div>
       </div>
+      <div class="grid md:grid-cols-1 gap-6 mb-8">
+       <div class="bg-blue-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-blue-900 mb-4">My Bookings</h3>
+        <div id="student-bookings-list" class="space-y-4">
+         <p class="text-gray-500 text-center py-4">Loading bookings...</p>
+        </div>
+       </div>
+      </div>
+     </div><!-- Staff Dashboard -->
+     <div id="staff-dashboard" class="hidden">
       <!-- All Bookings for Wellness Team -->
       <div class="bg-blue-50 rounded-lg p-6 mb-6">
         <h3 class="text-lg font-semibold text-blue-900 mb-4">Student Bookings</h3>
         <div id="staff-bookings-list" class="space-y-4">
          <p class="text-gray-500 text-center py-4">Loading bookings...</p>
+        </div>
+      </div>
+      <!-- Pending Stories (Posts) for Moderation -->
+      <div class="bg-purple-50 rounded-lg p-6 mb-6">
+        <h3 class="text-lg font-semibold text-purple-900 mb-4">Pending Stories</h3>
+        <div id="staff-pending-posts" class="space-y-4">
+         <p class="text-gray-500 text-center py-4">Loading pending stories...</p>
+        </div>
+      </div>
+      <!-- Events Management -->
+      <div class="bg-indigo-50 rounded-lg p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-indigo-900">Manage Events</h3>
+          <button onclick="showCreateEventModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Create Event
+          </button>
+        </div>
+        <div id="staff-events-list" class="space-y-4">
+         <p class="text-gray-500 text-center py-4">Loading events...</p>
         </div>
       </div>
       <!-- Recent Activity -->
@@ -669,17 +788,23 @@
     </div>
    </section>
   </main><!-- Add Book Modal -->
-  <div id="book-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-   <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+  <div id="book-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4 overflow-y-auto">
+   <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 my-8 max-h-[90vh] overflow-y-auto">
     <h3 class="text-xl font-bold text-gray-900 mb-4">Add New Book</h3>
     <form id="add-book-form" class="space-y-4">
      <div><label for="book-title" class="block text-sm font-medium text-gray-700 mb-1">Book Title</label> <input type="text" id="book-title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
      </div>
      <div><label for="book-author" class="block text-sm font-medium text-gray-700 mb-1">Author</label> <input type="text" id="book-author" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
      </div>
-     <div><label for="book-category-select" class="block text-sm font-medium text-gray-700 mb-1">Category</label> <select id="book-category-select" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select category</option> <option value="psychology">Psychology</option> <option value="self-help">Self Help</option> <option value="mindfulness">Mindfulness</option> <option value="inspiration">Inspiration</option> </select>
+     <div><label for="book-category-select" class="block text-sm font-medium text-gray-700 mb-1">Category</label> <select id="book-category-select" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select category</option> <option value="psychology">Psychology</option> <option value="self_help">Self Help</option> <option value="mental_health">Mental Health</option> <option value="wellbeing">Wellbeing</option> <option value="mindfulness">Mindfulness</option> <option value="other">Other</option> </select>
      </div>
      <div><label for="book-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label> <textarea id="book-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+     </div>
+     <div><label for="book-cover-image" class="block text-sm font-medium text-gray-700 mb-1">Cover Image (Optional)</label> <input type="file" id="book-cover-image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+      <p class="text-xs text-gray-500 mt-1">Upload a book cover image (JPG, PNG)</p>
+     </div>
+     <div><label for="book-pdf-file" class="block text-sm font-medium text-gray-700 mb-1">PDF File (Optional)</label> <input type="file" id="book-pdf-file" accept=".pdf" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+      <p class="text-xs text-gray-500 mt-1">Upload a PDF file that students can download</p>
      </div>
      <div class="flex gap-3 pt-4"><button type="submit" id="save-book-btn" class="flex-1 bg-blue-900 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center"> <span id="save-book-text">Add Book</span>
        <div id="save-book-loading" class="loading-spinner ml-2 hidden"></div></button> <button type="button" onclick="hideBookModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors">Cancel</button>
@@ -690,1313 +815,63 @@
   <div id="story-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
     <h3 class="text-xl font-bold text-gray-900 mb-4">Share Your Story</h3>
-    <p class="text-sm text-gray-600 mb-4">Your story will be shared anonymously to inspire and help others.</p>
+    <p class="text-sm text-gray-600 mb-4">Share your experience to inspire and help others.</p>
     <form id="share-story-form" class="space-y-4">
-     <div><label for="story-title" class="block text-sm font-medium text-gray-700 mb-1">Story Title</label> <input type="text" id="story-title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Give your story a title...">
+     <div><label for="story-category" class="block text-sm font-medium text-gray-700 mb-1">Category</label> <select id="story-category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select a category</option> <option value="overcoming_anxiety">Overcoming Anxiety</option> <option value="academic_stress">Academic Stress</option> <option value="personal_growth">Personal Growth</option> <option value="relationships">Relationships</option> <option value="self_care">Self Care</option> <option value="general_inspiration">General Inspiration</option> </select>
      </div>
      <div><label for="story-content" class="block text-sm font-medium text-gray-700 mb-1">Your Story</label> <textarea id="story-content" rows="6" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Share your journey, what you learned, or how you overcame challenges..."></textarea>
      </div>
-     <div><label for="story-category-select" class="block text-sm font-medium text-gray-700 mb-1">Category</label> <select id="story-category-select" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="">Select category</option> <option value="overcoming-anxiety">Overcoming Anxiety</option> <option value="academic-stress">Academic Stress</option> <option value="personal-growth">Personal Growth</option> <option value="relationships">Relationships</option> <option value="self-care">Self Care</option> <option value="inspiration">General Inspiration</option> </select>
+     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div class="flex items-start">
+       <input type="checkbox" id="story-anonymous" checked class="mt-1 mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+       <div>
+        <label for="story-anonymous" class="block text-sm font-medium text-gray-900 cursor-pointer">Post Anonymously</label>
+        <p class="text-xs text-gray-600 mt-1">When checked, your name won't be shown. Uncheck to share with your name attached.</p>
+       </div>
+      </div>
+     </div>
+     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+      <p class="text-xs text-yellow-800">
+       <strong>Note:</strong> Your story will be reviewed by the wellness team before being published to ensure a safe and supportive environment.
+      </p>
      </div>
      <div class="flex gap-3 pt-4"><button type="submit" id="share-story-btn" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center justify-center"> <span id="share-story-text">Share Story</span>
        <div id="share-story-loading" class="loading-spinner ml-2 hidden"></div></button> <button type="button" onclick="hideStoryModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors">Cancel</button>
      </div>
     </form>
    </div>
+  </div><!-- Create Event Modal -->
+  <div id="event-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+    <h3 class="text-xl font-bold text-gray-900 mb-4">Create New Event</h3>
+    <form id="create-event-form" class="space-y-4">
+     <div class="grid md:grid-cols-2 gap-4">
+      <div><label for="event-title" class="block text-sm font-medium text-gray-700 mb-1">Event Title *</label> <input type="text" id="event-title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., Stress Management Workshop">
+      </div>
+      <div><label for="event-location" class="block text-sm font-medium text-gray-700 mb-1">Location *</label> <input type="text" id="event-location" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="e.g., Room 301 or Zoom">
+      </div>
+     </div>
+     <div><label for="event-description" class="block text-sm font-medium text-gray-700 mb-1">Description *</label> <textarea id="event-description" rows="4" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Describe the event, what participants will learn, and what to bring..."></textarea>
+     </div>
+     <div class="grid md:grid-cols-2 gap-4">
+      <div><label for="event-date" class="block text-sm font-medium text-gray-700 mb-1">Date *</label> <input type="date" id="event-date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+      </div>
+      <div><label for="event-max-participants" class="block text-sm font-medium text-gray-700 mb-1">Max Participants *</label> <input type="number" id="event-max-participants" required min="1" value="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+      </div>
+     </div>
+     <div class="grid md:grid-cols-2 gap-4">
+      <div><label for="event-start-time" class="block text-sm font-medium text-gray-700 mb-1">Start Time *</label> <input type="time" id="event-start-time" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+      </div>
+      <div><label for="event-end-time" class="block text-sm font-medium text-gray-700 mb-1">End Time *</label> <input type="time" id="event-end-time" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+      </div>
+     </div>
+     <div class="flex gap-3 pt-4"><button type="submit" id="create-event-btn" class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center"> <span id="create-event-text">Create Event</span>
+       <div id="create-event-loading" class="loading-spinner ml-2 hidden"></div></button> <button type="button" onclick="hideCreateEventModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors">Cancel</button>
+     </div>
+    </form>
+   </div>
   </div>
-  <script>
-        // Configuration and state
-        let currentSection = 'home';
-        let currentUserRole = 'student';
-        let allData = [];
-        let isLoading = false;
-        let currentUser = null; // Store logged-in user info
-
-        // Default configuration
-        const defaultConfig = {
-            platform_title: "MindBridge",
-            welcome_message: "Your mental wellness journey starts here",
-            booking_title: "Book a Session",
-            library_title: "Wellness Library",
-            stories_title: "Share Your Story"
-        };
-
-        // Data handler for SDK
-        const dataHandler = {
-            onDataChanged(data) {
-                allData = data;
-                updateUI();
-                updateCounts();
-                updateDashboard();
-            }
-        };
-
-        // ========== AUTHENTICATION FUNCTIONS ==========
-        
-        // Get CSRF token from cookie
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        // Validation helpers
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                return false;
-            }
-            
-            // Check for common educational domains (optional - can be customized)
-            const eduDomains = ['.edu', '.ac.', 'student', 'university', 'college'];
-            const isEduEmail = eduDomains.some(domain => email.toLowerCase().includes(domain));
-            
-            // For now, just warn if not edu email but still allow it
-            // If you want to enforce edu emails only, uncomment the next line:
-            // return isEduEmail;
-            
-            return true;
-        }
-        
-        function validateStudentEmail(email) {
-            // Strict validation for ALU student email addresses only
-            const emailRegex = /^[^\s@]+@alustudent\.com$/i;
-            
-            if (!emailRegex.test(email)) {
-                return { valid: false, message: 'Please use your ALU student email (@alustudent.com)' };
-            }
-            
-            return { valid: true };
-        }
-
-        function validatePassword(password) {
-            if (password.length < 8) {
-                return { valid: false, message: 'Password must be at least 8 characters' };
-            }
-            if (!/[A-Z]/.test(password)) {
-                return { valid: false, message: 'Password must contain at least one uppercase letter' };
-            }
-            if (!/[a-z]/.test(password)) {
-                return { valid: false, message: 'Password must contain at least one lowercase letter' };
-            }
-            if (!/[0-9]/.test(password)) {
-                return { valid: false, message: 'Password must contain at least one number' };
-            }
-            return { valid: true };
-        }
-
-        function validatePhone(phone) {
-            // Remove spaces, dashes, parentheses
-            const cleaned = phone.replace(/[\s\-\(\)]/g, '');
-            // Check if it's 10 digits (US format) or 11 digits (with country code)
-            return /^[0-9]{10,11}$/.test(cleaned);
-        }
-
-        // Show/hide modals
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
-        }
-
-        function hideLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
-            document.getElementById('login-form').reset();
-        }
-
-        function showRegisterModal() {
-            document.getElementById('register-modal').classList.remove('hidden');
-        }
-
-        function hideRegisterModal() {
-            document.getElementById('register-modal').classList.add('hidden');
-            document.getElementById('register-form').reset();
-        }
-
-        function switchToRegister() {
-            hideLoginModal();
-            showRegisterModal();
-        }
-
-        function switchToLogin() {
-            hideRegisterModal();
-            showLoginModal();
-        }
-
-        // Handle login - function to be called after DOM loads
-        function attachAuthListeners() {
-            // Login form
-            document.getElementById('login-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('login-submit-btn');
-            const btnText = document.getElementById('login-btn-text');
-            const loading = document.getElementById('login-loading');
-            
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            
-            // Validation
-            if (!username || !password) {
-                showToast('Please fill in all fields', 'error');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showToast('Username must be at least 3 characters', 'error');
-                return;
-            }
-            
-            btn.disabled = true;
-            btnText.textContent = 'Logging in...';
-            loading.classList.remove('hidden');
-            
-            // Setup timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-            
-            try {
-                const response = await fetch('/users/api/login/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ username, password }),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                // Check HTTP status
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        showToast('Invalid username or password', 'error');
-                    } else if (response.status === 429) {
-                        showToast('Too many login attempts. Please try again later.', 'error');
-                    } else if (response.status >= 500) {
-                        showToast('Server error. Please try again later.', 'error');
-                    } else {
-                        const data = await response.json().catch(() => ({}));
-                        showToast(data.error || 'Login failed. Please try again.', 'error');
-                    }
-                    return;
-                }
-                
-                const data = await response.json();
-                
-                if (data.ok) {
-                    currentUser = {
-                        username: username,
-                        role: data.role
-                    };
-                    updateAuthUI();
-                    hideLoginModal();
-                    showToast('Welcome back! Logged in successfully.', 'success');
-                } else {
-                    showToast(data.error || 'Login failed. Please try again.', 'error');
-                }
-            } catch (error) {
-                clearTimeout(timeoutId);
-                
-                if (error.name === 'AbortError') {
-                    showToast('Request timed out. Please check your connection.', 'error');
-                } else if (error.message.includes('Failed to fetch')) {
-                    showToast('Network error. Please check your internet connection.', 'error');
-                } else {
-                    showToast('An unexpected error occurred. Please try again.', 'error');
-                }
-                console.error('Login error:', error);
-            } finally {
-                btn.disabled = false;
-                btnText.textContent = 'Login';
-                loading.classList.add('hidden');
-            }
-        });
-
-            // Register form
-            document.getElementById('register-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('register-submit-btn');
-            const btnText = document.getElementById('register-btn-text');
-            const loading = document.getElementById('register-loading');
-            
-            // Get form values
-            const username = document.getElementById('register-username').value.trim();
-            const email = document.getElementById('register-email').value.trim();
-            const firstName = document.getElementById('register-firstname').value.trim();
-            const lastName = document.getElementById('register-lastname').value.trim();
-            const studentId = document.getElementById('register-studentid').value.trim();
-            const phone = document.getElementById('register-phone').value.trim();
-            const password = document.getElementById('register-password').value;
-            const password2 = document.getElementById('register-password2').value;
-            
-            // Validation - only check required fields
-            if (!username || !email || !firstName || !lastName || !password || !password2) {
-                showToast('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showToast('Username must be at least 3 characters', 'error');
-                return;
-            }
-            
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                showToast('Username can only contain letters, numbers, and underscores', 'error');
-                return;
-            }
-            
-            // Validate student email
-            const emailValidation = validateStudentEmail(email);
-            if (!emailValidation.valid) {
-                showToast(emailValidation.message, 'error');
-                return;
-            }
-            
-            // Optional: validate student ID only if provided
-            if (studentId && studentId.length < 5) {
-                showToast('Student ID must be at least 5 characters', 'error');
-                return;
-            }
-            
-            // Optional: validate phone only if provided
-            if (phone && !validatePhone(phone)) {
-                showToast('Please enter a valid phone number (10-11 digits)', 'error');
-                return;
-            }
-            
-            const passwordValidation = validatePassword(password);
-            if (!passwordValidation.valid) {
-                showToast(passwordValidation.message, 'error');
-                return;
-            }
-            
-            if (password !== password2) {
-                showToast('Passwords do not match!', 'error');
-                return;
-            }
-            
-            btn.disabled = true;
-            btnText.textContent = 'Creating account...';
-            loading.classList.remove('hidden');
-            
-            const formData = {
-                username: username,
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                student_id: studentId,
-                phone_number: phone,
-                password: password,
-                password2: password2,
-                role: 'student'
-            };
-            
-            // Setup timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-            
-            try {
-                const response = await fetch('/users/api/register/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify(formData),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                console.log('Registration response status:', response.status);
-                
-                // Check HTTP status
-                if (!response.ok) {
-                    if (response.status === 400) {
-                        const data = await response.json().catch(() => ({}));
-                        // Handle specific validation errors
-                        if (data.errors) {
-                            const errorMessages = Object.entries(data.errors)
-                                .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
-                                .join('\n');
-                            showToast(errorMessages || data.error || 'Validation failed', 'error');
-                        } else {
-                            showToast(data.error || 'Invalid registration data', 'error');
-                        }
-                    } else if (response.status === 409) {
-                        showToast('Username or email already exists', 'error');
-                    } else if (response.status >= 500) {
-                        showToast('Server error. Please try again later.', 'error');
-                    } else {
-                        const data = await response.json().catch(() => ({}));
-                        showToast(data.error || 'Registration failed. Please try again.', 'error');
-                    }
-                    return;
-                }
-                
-                const data = await response.json();
-                console.log('Registration response data:', data);
-                
-                if (data.ok) {
-                    currentUser = {
-                        username: formData.username,
-                        role: data.role
-                    };
-                    updateAuthUI();
-                    hideRegisterModal();
-                    showToast('Account created successfully! Welcome to MindBridge.', 'success');
-                } else {
-                    showToast(data.error || 'Registration failed. Please try again.', 'error');
-                }
-            } catch (error) {
-                clearTimeout(timeoutId);
-                
-                if (error.name === 'AbortError') {
-                    showToast('Request timed out. Please check your connection.', 'error');
-                } else if (error.message.includes('Failed to fetch')) {
-                    showToast('Network error. Please check your internet connection.', 'error');
-                } else {
-                    showToast('An unexpected error occurred. Please try again.', 'error');
-                }
-                console.error('Registration error:', error);
-            } finally {
-                btn.disabled = false;
-                btnText.textContent = 'Create Account';
-                loading.classList.add('hidden');
-            }
-        });
-        }
-
-        // Handle logout
-        async function handleLogout() {
-            // Setup timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-            
-            try {
-                const response = await fetch('/users/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                currentUser = null;
-                updateAuthUI();
-                showSection('home');
-                showToast('Logged out successfully.', 'success');
-            } catch (error) {
-                clearTimeout(timeoutId);
-                console.error('Logout error:', error);
-                // Even if server request fails, clear local state
-                currentUser = null;
-                updateAuthUI();
-                showSection('home');
-                showToast('Logged out.', 'success');
-            }
-        }
-
-        // Update UI based on auth state
-        function updateAuthUI() {
-            const authButtons = document.getElementById('auth-buttons');
-            const userMenu = document.getElementById('user-menu');
-            const userName = document.getElementById('user-name');
-            const userInitial = document.getElementById('user-initial');
-            
-            if (currentUser) {
-                // User is logged in
-                authButtons.classList.add('hidden');
-                userMenu.classList.remove('hidden');
-                userName.textContent = currentUser.username;
-                userInitial.textContent = currentUser.username.charAt(0).toUpperCase();
-                currentUserRole = currentUser.role;
-                
-                // Pre-fill booking form if elements exist
-                const studentNameInput = document.getElementById('student-name');
-                const studentEmailInput = document.getElementById('student-email');
-                if (studentNameInput && !studentNameInput.value) {
-                    studentNameInput.value = currentUser.username;
-                }
-                if (studentEmailInput && !studentEmailInput.value) {
-                    studentEmailInput.value = currentUser.username + '@alustudent.com';
-                }
-                
-                // Show/hide role-based features
-                const addBookBtn = document.getElementById('add-book-btn');
-                const studentDashboard = document.getElementById('student-dashboard');
-                const staffDashboard = document.getElementById('staff-dashboard');
-                
-                if (addBookBtn && studentDashboard && staffDashboard) {
-                    if (currentUserRole === 'wellness_team') {
-                        addBookBtn.classList.remove('hidden');
-                        studentDashboard.classList.add('hidden');
-                        staffDashboard.classList.remove('hidden');
-                    } else {
-                        addBookBtn.classList.add('hidden');
-                        studentDashboard.classList.remove('hidden');
-                        staffDashboard.classList.add('hidden');
-                    }
-                }
-            } else {
-                // User is not logged in
-                authButtons.classList.remove('hidden');
-                userMenu.classList.add('hidden');
-            }
-        }
-
-        // Check if user needs to be logged in for certain actions
-        function requireAuth(action) {
-            if (!currentUser) {
-                showToast('Please login to ' + action, 'error');
-                showLoginModal();
-                return false;
-            }
-            return true;
-        }
-
-        // ========== END AUTHENTICATION FUNCTIONS ==========
-
-        // Initialize SDK and app
-        async function initializeApp() {
-            try {
-                // Initialize Element SDK
-                if (window.elementSdk) {
-                    await window.elementSdk.init({
-                        defaultConfig,
-                        onConfigChange: async (config) => {
-                            document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
-                            document.getElementById('welcome-message').textContent = config.welcome_message || defaultConfig.welcome_message;
-                            document.getElementById('booking-title').textContent = config.booking_title || defaultConfig.booking_title;
-                            document.getElementById('library-title').textContent = config.library_title || defaultConfig.library_title;
-                            document.getElementById('stories-title').textContent = config.stories_title || defaultConfig.stories_title;
-                        },
-                        mapToCapabilities: (config) => ({
-                            recolorables: [
-                                {
-                                    get: () => config.primary_color || "#1e3a8a",
-                                    set: (value) => {
-                                        config.primary_color = value;
-                                        window.elementSdk.setConfig({ primary_color: value });
-                                    }
-                                },
-                                {
-                                    get: () => config.accent_color || "#dc2626",
-                                    set: (value) => {
-                                        config.accent_color = value;
-                                        window.elementSdk.setConfig({ accent_color: value });
-                                    }
-                                },
-                                {
-                                    get: () => config.background_color || "#f9fafb",
-                                    set: (value) => {
-                                        config.background_color = value;
-                                        window.elementSdk.setConfig({ background_color: value });
-                                    }
-                                }
-                            ],
-                            borderables: [],
-                            fontEditable: {
-                                get: () => config.font_family || "Inter",
-                                set: (value) => {
-                                    config.font_family = value;
-                                    window.elementSdk.setConfig({ font_family: value });
-                                }
-                            },
-                            fontSizeable: {
-                                get: () => config.font_size || 16,
-                                set: (value) => {
-                                    config.font_size = value;
-                                    window.elementSdk.setConfig({ font_size: value });
-                                }
-                            }
-                        }),
-                        mapToEditPanelValues: (config) => new Map([
-                            ["platform_title", config.platform_title || defaultConfig.platform_title],
-                            ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
-                            ["booking_title", config.booking_title || defaultConfig.booking_title],
-                            ["library_title", config.library_title || defaultConfig.library_title],
-                            ["stories_title", config.stories_title || defaultConfig.stories_title]
-                        ])
-                    });
-                }
-
-                // Initialize Data SDK
-                if (window.dataSdk) {
-                    const result = await window.dataSdk.init(dataHandler);
-                    if (!result.isOk) {
-                        console.error("Failed to initialize data SDK");
-                    }
-                }
-
-                // Set minimum date for booking
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('session-date').min = today;
-
-                // Setup event listeners
-                setupEventListeners();
-                
-                // Attach authentication event listeners
-                attachAuthListeners();
-                
-                // Initialize authentication UI
-                updateAuthUI();
-
-            } catch (error) {
-                console.error("Failed to initialize app:", error);
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Booking form
-            document.getElementById('booking-form').addEventListener('submit', handleBookingSubmit);
-            
-            // Add book form
-            document.getElementById('add-book-form').addEventListener('submit', handleAddBook);
-            
-            // Share story form
-            document.getElementById('share-story-form').addEventListener('submit', handleShareStory);
-            
-            // Search and filter
-            document.getElementById('book-search').addEventListener('input', filterBooks);
-            document.getElementById('book-category').addEventListener('change', filterBooks);
-        }
-
-        // Navigation functions
-        function showSection(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.section-content').forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionName + '-section').classList.remove('hidden');
-            currentSection = sectionName;
-            
-            // Update navigation
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-red-300');
-            });
-            
-            // Update UI based on section
-            if (sectionName === 'library') {
-                filterBooks();
-            } else if (sectionName === 'stories') {
-                renderStories();
-            } else if (sectionName === 'dashboard') {
-                // Show appropriate dashboard based on user role
-                const studentDash = document.getElementById('student-dashboard');
-                const staffDash = document.getElementById('staff-dashboard');
-                
-                if (currentUser && currentUser.role === 'wellness_team') {
-                    if (studentDash) studentDash.classList.add('hidden');
-                    if (staffDash) staffDash.classList.remove('hidden');
-                } else {
-                    if (studentDash) studentDash.classList.remove('hidden');
-                    if (staffDash) staffDash.classList.add('hidden');
-                }
-                
-                loadBookings();
-            }
-        }
-
-        function updateUserRole() {
-            const role = document.getElementById('user-role').value;
-            currentUserRole = role;
-            
-            // Show/hide staff-only features
-            const addBookBtn = document.getElementById('add-book-btn');
-            const studentDashboard = document.getElementById('student-dashboard');
-            const staffDashboard = document.getElementById('staff-dashboard');
-            
-            if (role === 'staff') {
-                addBookBtn.classList.remove('hidden');
-                studentDashboard.classList.add('hidden');
-                staffDashboard.classList.remove('hidden');
-            } else {
-                addBookBtn.classList.add('hidden');
-                studentDashboard.classList.remove('hidden');
-                staffDashboard.classList.add('hidden');
-            }
-            
-            updateDashboard();
-        }
-
-        // Booking functions
-        async function handleBookingSubmit(e) {
-            e.preventDefault();
-            
-            if (!requireAuth('book a session')) {
-                return;
-            }
-            
-            const btn = document.getElementById('book-session-btn');
-            const btnText = document.getElementById('book-btn-text');
-            const loading = document.getElementById('book-loading');
-            
-            // Show loading state
-            btn.disabled = true;
-            btnText.textContent = 'Booking...';
-            loading.classList.remove('hidden');
-            
-            // Prepare booking data
-            const timeValue = document.getElementById('session-time').value;
-            // Convert "09:00 AM" to 24-hour "09:00:00" format
-            let convertedTime = timeValue;
-            if (timeValue.includes('AM') || timeValue.includes('PM')) {
-                const timeParts = timeValue.match(/(\d+):(\d+)\s*(AM|PM)/i);
-                if (timeParts) {
-                    let hours = parseInt(timeParts[1]);
-                    const minutes = timeParts[2];
-                    const period = timeParts[3].toUpperCase();
-                    
-                    if (period === 'PM' && hours !== 12) hours += 12;
-                    if (period === 'AM' && hours === 12) hours = 0;
-                    
-                    convertedTime = `${hours.toString().padStart(2, '0')}:${minutes}:00`;
-                }
-            } else {
-                convertedTime = timeValue + ':00';
-            }
-            
-            const bookingData = {
-                full_name: document.getElementById('student-name').value,
-                email: document.getElementById('student-email').value,
-                phone_number: '+250000000000', // Default phone
-                date: document.getElementById('session-date').value,
-                time: convertedTime,
-                session_type: 'individual',
-                reason: document.getElementById('specialist-select').value,
-                additional_notes: document.getElementById('session-notes').value
-            };
-            
-            try {
-                console.log('Sending booking data:', bookingData);
-                const response = await fetch('/api/bookings/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify(bookingData)
-                });
-                
-                if (!response.ok) {
-                    let error;
-                    const contentType = response.headers.get('content-type');
-                    
-                    if (contentType && contentType.includes('application/json')) {
-                        error = await response.json();
-                        console.error('Booking error response:', error);
-                        console.error('Full error object:', JSON.stringify(error, null, 2));
-                        
-                        // Build detailed error message
-                        let errorMessage = 'Booking failed: ';
-                        if (typeof error === 'object') {
-                            if (error.detail) {
-                                errorMessage += error.detail;
-                            } else {
-                                // Show all field errors
-                                errorMessage += Object.entries(error)
-                                    .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
-                                    .join('; ');
-                            }
-                        } else {
-                            errorMessage += error || 'Unknown error';
-                        }
-                        throw new Error(errorMessage);
-                    } else {
-                        // Server returned HTML error page
-                        const errorText = await response.text();
-                        console.error('Server error (HTML):', errorText.substring(0, 500));
-                        throw new Error(`Server error (${response.status}). Check browser console and Django terminal for details.`);
-                    }
-                }
-                
-                const data = await response.json();
-                showToast("Session booked successfully! You'll receive a confirmation once approved.", "success");
-                document.getElementById('booking-form').reset();
-                
-                // Refresh bookings if on dashboard
-                if (currentSection === 'dashboard') {
-                    await loadBookings();
-                }
-                
-            } catch (error) {
-                showToast(error.message || 'Failed to book session. Please try again.', 'error');
-                console.error('Booking error:', error);
-            } finally {
-                btn.disabled = false;
-                btnText.textContent = 'Book Session';
-                loading.classList.add('hidden');
-            }
-        }
-        
-        // Load user's bookings
-        async function loadBookings() {
-            if (!currentUser) return;
-            
-            console.log('Loading bookings for user:', currentUser);
-            
-            try {
-                const response = await fetch('/api/bookings/', {
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                });
-                
-                if (!response.ok) throw new Error('Failed to load bookings');
-                
-                const bookings = await response.json();
-                console.log('Loaded bookings:', bookings);
-                displayBookings(bookings.results || bookings);
-                
-            } catch (error) {
-                console.error('Error loading bookings:', error);
-                showToast('Failed to load bookings', 'error');
-            }
-        }
-        
-        // Display bookings in dashboard
-        function displayBookings(bookings) {
-            // Determine which container to use based on user role
-            const isWellnessTeam = currentUser && currentUser.role === 'wellness_team';
-            const containerId = isWellnessTeam ? 'staff-bookings-list' : 'student-bookings-list';
-            const container = document.getElementById(containerId);
-            
-            if (!container) {
-                console.error('Bookings container not found:', containerId);
-                return;
-            }
-            
-            console.log('Displaying bookings:', bookings);
-            console.log('Current user:', currentUser);
-            console.log('Using container:', containerId);
-            
-            if (bookings.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">No bookings yet. Book your first session!</p>';
-                return;
-            }
-            
-            console.log('Is wellness team?', isWellnessTeam);
-            
-            container.innerHTML = bookings.map(booking => {
-                console.log('Rendering booking:', booking);
-                return `
-                <div class="bg-white rounded-lg shadow p-6 border-l-4 ${getStatusColor(booking.status)}">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h4 class="font-semibold text-gray-900">${formatDate(booking.date)} at ${formatTime(booking.time)}</h4>
-                            <p class="text-sm text-gray-600">${booking.session_type}</p>
-                            ${isWellnessTeam ? `<p class="text-sm text-blue-600 mt-1">Student: ${booking.student_name || booking.student_username}</p>` : ''}
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(booking.status)}">
-                            ${booking.status.toUpperCase()}
-                        </span>
-                    </div>
-                    <p class="text-gray-700 mb-2"><strong>Reason:</strong> ${booking.reason}</p>
-                    ${booking.additional_notes ? `<p class="text-gray-600 text-sm mb-2">${booking.additional_notes}</p>` : ''}
-                    
-                    ${booking.meet_link ? `
-                        <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
-                                    </svg>
-                                    <span class="text-green-800 font-medium">Google Meet Ready</span>
-                                </div>
-                                <a href="${booking.meet_link}" target="_blank" 
-                                   class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
-                                    Join Meeting
-                                </a>
-                            </div>
-                        </div>
-                    ` : booking.status === 'approved' ? `
-                        <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <p class="text-blue-800 text-sm">Meeting link will be provided shortly</p>
-                        </div>
-                    ` : ''}
-                    
-                    ${isWellnessTeam && booking.status === 'pending' ? `
-                        <div class="mt-4 flex gap-2">
-                            <button onclick="approveBooking(${booking.id})" 
-                                    class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
-                                ✓ Approve & Generate Meet Link
-                            </button>
-                            <button onclick="rejectBooking(${booking.id})" 
-                                    class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors">
-                                ✗ Reject
-                            </button>
-                        </div>
-                    ` : !isWellnessTeam && (booking.status === 'pending' || booking.status === 'approved') ? `
-                        <button onclick="cancelBooking(${booking.id})" 
-                                class="mt-4 text-red-600 hover:text-red-800 text-sm font-medium">
-                            Cancel Booking
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-            }).join('');
-        }
-        
-        // Cancel booking
-        async function cancelBooking(bookingId) {
-            if (!confirm('Are you sure you want to cancel this booking?')) return;
-            
-            try {
-                const response = await fetch(`/api/bookings/${bookingId}/cancel/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                });
-                
-                if (!response.ok) throw new Error('Failed to cancel booking');
-                
-                showToast('Booking cancelled successfully', 'success');
-                await loadBookings();
-                
-            } catch (error) {
-                showToast(error.message || 'Failed to cancel booking', 'error');
-                console.error('Cancel error:', error);
-            }
-        }
-        
-        // Approve booking (Wellness Team only)
-        async function approveBooking(bookingId) {
-            if (!confirm('Approve this booking? A Google Meet link will be generated if credentials are configured.')) return;
-            
-            try {
-                const response = await fetch(`/api/bookings/${bookingId}/approve/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                });
-                
-                if (!response.ok) throw new Error('Failed to approve booking');
-                
-                const data = await response.json();
-                if (data.meet_link) {
-                    showToast('Booking approved! Google Meet link generated successfully.', 'success');
-                } else {
-                    showToast('Booking approved! (Google Meet link generation skipped - credentials not configured)', 'success');
-                }
-                await loadBookings();
-                
-            } catch (error) {
-                showToast(error.message || 'Failed to approve booking', 'error');
-                console.error('Approve error:', error);
-            }
-        }
-        
-        // Reject booking (Wellness Team only)
-        async function rejectBooking(bookingId) {
-            const reason = prompt('Please provide a reason for rejection (optional):');
-            if (reason === null) return; // User cancelled
-            
-            try {
-                const response = await fetch(`/api/bookings/${bookingId}/reject/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ notes: reason })
-                });
-                
-                if (!response.ok) throw new Error('Failed to reject booking');
-                
-                showToast('Booking rejected', 'success');
-                await loadBookings();
-                
-            } catch (error) {
-                showToast(error.message || 'Failed to reject booking', 'error');
-                console.error('Reject error:', error);
-            }
-        }
-        
-        // Helper functions
-        function getStatusColor(status) {
-            const colors = {
-                'pending': 'border-yellow-500',
-                'approved': 'border-green-500',
-                'rejected': 'border-red-500',
-                'completed': 'border-blue-500',
-                'cancelled': 'border-gray-500'
-            };
-            return colors[status] || 'border-gray-500';
-        }
-        
-        function getStatusBadge(status) {
-            const badges = {
-                'pending': 'bg-yellow-100 text-yellow-800',
-                'approved': 'bg-green-100 text-green-800',
-                'rejected': 'bg-red-100 text-red-800',
-                'completed': 'bg-blue-100 text-blue-800',
-                'cancelled': 'bg-gray-100 text-gray-800'
-            };
-            return badges[status] || 'bg-gray-100 text-gray-800';
-        }
-        
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        
-        function formatTime(timeString) {
-            const [hours, minutes] = timeString.split(':');
-            const hour = parseInt(hours);
-            const ampm = hour >= 12 ? 'PM' : 'AM';
-            const displayHour = hour % 12 || 12;
-            return `${displayHour}:${minutes} ${ampm}`;
-        }
-
-        // Library functions
-        function showAddBookModal() {
-            document.getElementById('book-modal').classList.remove('hidden');
-        }
-
-        function hideBookModal() {
-            document.getElementById('book-modal').classList.add('hidden');
-            document.getElementById('add-book-form').reset();
-        }
-
-        async function handleAddBook(e) {
-            e.preventDefault();
-            
-            if (allData.length >= 999) {
-                showToast("Maximum limit of 999 items reached. Please delete some items first.", "error");
-                return;
-            }
-            
-            const btn = document.getElementById('save-book-btn');
-            const btnText = document.getElementById('save-book-text');
-            const loading = document.getElementById('save-book-loading');
-            
-            // Show loading state
-            btn.disabled = true;
-            btnText.textContent = 'Adding...';
-            loading.classList.remove('hidden');
-            
-            try {
-                const bookData = {
-                    id: Date.now().toString(),
-                    type: 'book',
-                    title: document.getElementById('book-title').value,
-                    content: document.getElementById('book-description').value,
-                    author: document.getElementById('book-author').value,
-                    date: new Date().toISOString(),
-                    status: 'available',
-                    category: document.getElementById('book-category-select').value,
-                    anonymous: false
-                };
-
-                const result = await window.dataSdk.create(bookData);
-                
-                if (result.isOk) {
-                    showToast("Book added successfully!", "success");
-                    hideBookModal();
-                } else {
-                    showToast("Failed to add book. Please try again.", "error");
-                }
-            } catch (error) {
-                showToast("An error occurred. Please try again.", "error");
-            } finally {
-                // Reset button state
-                btn.disabled = false;
-                btnText.textContent = 'Add Book';
-                loading.classList.add('hidden');
-            }
-        }
-
-        function filterBooks() {
-            const searchTerm = document.getElementById('book-search').value.toLowerCase();
-            const selectedCategory = document.getElementById('book-category').value;
-            
-            const books = allData.filter(item => item.type === 'book');
-            let filteredBooks = books;
-            
-            if (searchTerm) {
-                filteredBooks = filteredBooks.filter(book => 
-                    book.title.toLowerCase().includes(searchTerm) ||
-                    book.author.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            if (selectedCategory) {
-                filteredBooks = filteredBooks.filter(book => book.category === selectedCategory);
-            }
-            
-            renderBooks(filteredBooks);
-        }
-
-        function renderBooks(books = null) {
-            const booksGrid = document.getElementById('books-grid');
-            const noBooksMessage = document.getElementById('no-books-message');
-            
-            if (!books) {
-                books = allData.filter(item => item.type === 'book');
-            }
-            
-            if (books.length === 0) {
-                booksGrid.classList.add('hidden');
-                noBooksMessage.classList.remove('hidden');
-                return;
-            }
-            
-            booksGrid.classList.remove('hidden');
-            noBooksMessage.classList.add('hidden');
-            
-            const categoryColors = {
-                'psychology': 'from-blue-400 to-blue-600',
-                'self-help': 'from-green-400 to-green-600',
-                'mindfulness': 'from-purple-400 to-purple-600',
-                'inspiration': 'from-red-400 to-red-600'
-            };
-            
-            booksGrid.innerHTML = books.map(book => {
-                const colorClass = categoryColors[book.category] || 'from-gray-400 to-gray-600';
-                return `
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
-                        <div class="h-48 bg-gradient-to-br ${colorClass} flex items-center justify-center">
-                            <svg viewBox="0 0 200 250" class="w-32 h-40">
-                                <rect x="20" y="20" width="160" height="210" rx="8" fill="white" opacity="0.9"/>
-                                <rect x="30" y="40" width="140" height="4" fill="currentColor" opacity="0.8"/>
-                                <rect x="30" y="50" width="${Math.min(140, book.title.length * 8)}" height="3" fill="#6b7280"/>
-                                <rect x="30" y="60" width="${Math.min(140, book.author.length * 6)}" height="3" fill="#6b7280"/>
-                                <circle cx="100" cy="130" r="25" fill="currentColor" opacity="0.2"/>
-                                <rect x="85" y="115" width="30" height="30" rx="4" fill="currentColor" opacity="0.6"/>
-                            </svg>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-gray-900 mb-2 line-clamp-2">${book.title}</h3>
-                            <p class="text-sm text-gray-600 mb-3">by ${book.author}</p>
-                            <span class="inline-block bg-${book.category === 'psychology' ? 'blue' : book.category === 'self-help' ? 'green' : book.category === 'mindfulness' ? 'purple' : 'red'}-100 text-${book.category === 'psychology' ? 'blue' : book.category === 'self-help' ? 'green' : book.category === 'mindfulness' ? 'purple' : 'red'}-800 text-xs px-2 py-1 rounded-full mb-3 capitalize">${book.category.replace('-', ' ')}</span>
-                            <p class="text-sm text-gray-500 line-clamp-3">${book.content || 'A valuable resource for mental wellness and personal growth.'}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Stories functions
-        function showStoryModal() {
-            document.getElementById('story-modal').classList.remove('hidden');
-        }
-
-        function hideStoryModal() {
-            document.getElementById('story-modal').classList.add('hidden');
-            document.getElementById('share-story-form').reset();
-        }
-
-        async function handleShareStory(e) {
-            e.preventDefault();
-            
-            if (allData.length >= 999) {
-                showToast("Maximum limit of 999 stories reached. Please contact support.", "error");
-                return;
-            }
-            
-            const btn = document.getElementById('share-story-btn');
-            const btnText = document.getElementById('share-story-text');
-            const loading = document.getElementById('share-story-loading');
-            
-            // Show loading state
-            btn.disabled = true;
-            btnText.textContent = 'Sharing...';
-            loading.classList.remove('hidden');
-            
-            try {
-                const storyData = {
-                    id: Date.now().toString(),
-                    type: 'story',
-                    title: document.getElementById('story-title').value,
-                    content: document.getElementById('story-content').value,
-                    author: 'Anonymous',
-                    date: new Date().toISOString(),
-                    status: 'published',
-                    category: document.getElementById('story-category-select').value,
-                    anonymous: true
-                };
-
-                const result = await window.dataSdk.create(storyData);
-                
-                if (result.isOk) {
-                    showToast("Story shared successfully! Thank you for inspiring others.", "success");
-                    hideStoryModal();
-                } else {
-                    showToast("Failed to share story. Please try again.", "error");
-                }
-            } catch (error) {
-                showToast("An error occurred. Please try again.", "error");
-            } finally {
-                // Reset button state
-                btn.disabled = false;
-                btnText.textContent = 'Share Story';
-                loading.classList.add('hidden');
-            }
-        }
-
-        function renderStories() {
-            const storiesFeed = document.getElementById('stories-feed');
-            const noStoriesMessage = document.getElementById('no-stories-message');
-            
-            const stories = allData.filter(item => item.type === 'story').sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            if (stories.length === 0) {
-                storiesFeed.classList.add('hidden');
-                noStoriesMessage.classList.remove('hidden');
-                return;
-            }
-            
-            storiesFeed.classList.remove('hidden');
-            noStoriesMessage.classList.add('hidden');
-            
-            storiesFeed.innerHTML = stories.map(story => `
-                <div class="story-card rounded-lg p-6 fade-in">
-                    <div class="flex items-start justify-between mb-3">
-                        <h3 class="text-lg font-semibold text-gray-900">${story.title}</h3>
-                        <span class="text-xs text-gray-500">${new Date(story.date).toLocaleDateString()}</span>
-                    </div>
-                    <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-3">${story.category.replace('-', ' ')}</span>
-                    <p class="text-gray-700 leading-relaxed">${story.content}</p>
-                    <div class="mt-4 flex items-center text-sm text-gray-500">
-                        <span class="mr-4">💙 Anonymous</span>
-                        <span>🌟 Inspiring</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Dashboard functions
-        function updateDashboard() {
-            if (currentUserRole === 'student') {
-                updateStudentDashboard();
-            } else {
-                updateStaffDashboard();
-            }
-        }
-
-        function updateStudentDashboard() {
-            const mySessions = document.getElementById('my-sessions');
-            const myReadingList = document.getElementById('my-reading-list');
-            
-            const sessions = allData.filter(item => item.type === 'booking');
-            const books = allData.filter(item => item.type === 'book').slice(0, 3);
-            
-            // My sessions
-            if (sessions.length === 0) {
-                mySessions.innerHTML = '<p class="text-gray-500 text-sm">No upcoming sessions</p>';
-            } else {
-                mySessions.innerHTML = sessions.slice(0, 3).map(session => `
-                    <div class="bg-white rounded-lg p-3 border border-blue-200">
-                        <p class="font-medium text-sm">${session.specialist}</p>
-                        <p class="text-xs text-gray-600">${session.date} at ${session.time_slot}</p>
-                    </div>
-                `).join('');
-            }
-            
-            // Reading list
-            if (books.length === 0) {
-                myReadingList.innerHTML = '<p class="text-gray-500 text-sm">No books available</p>';
-            } else {
-                myReadingList.innerHTML = books.map(book => `
-                    <div class="bg-white rounded-lg p-3 border border-red-200">
-                        <p class="font-medium text-sm">${book.title}</p>
-                        <p class="text-xs text-gray-600">by ${book.author}</p>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function updateStaffDashboard() {
-            const recentActivity = document.getElementById('recent-activity');
-            
-            const recentItems = allData
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 5);
-            
-            if (recentItems.length === 0) {
-                recentActivity.innerHTML = '<p class="text-gray-500 text-sm">No recent activity</p>';
-            } else {
-                recentActivity.innerHTML = recentItems.map(item => `
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="font-medium text-sm">${item.title}</p>
-                                <p class="text-xs text-gray-600">${item.type} • ${new Date(item.date).toLocaleDateString()}</p>
-                            </div>
-                            <span class="text-xs px-2 py-1 rounded-full ${
-                                item.type === 'booking' ? 'bg-blue-100 text-blue-800' :
-                                item.type === 'book' ? 'bg-green-100 text-green-800' :
-                                'bg-purple-100 text-purple-800'
-                            }">${item.type}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // UI update functions
-        function updateUI() {
-            if (currentSection === 'library') {
-                renderBooks();
-            } else if (currentSection === 'stories') {
-                renderStories();
-            }
-        }
-
-        function updateCounts() {
-            const sessions = allData.filter(item => item.type === 'booking');
-            const books = allData.filter(item => item.type === 'book');
-            const stories = allData.filter(item => item.type === 'story');
-            
-            document.getElementById('sessions-count').textContent = sessions.length;
-            document.getElementById('books-count').textContent = books.length;
-            document.getElementById('stories-count').textContent = stories.length;
-            
-            // Staff dashboard counts
-            document.getElementById('total-sessions').textContent = sessions.length;
-            document.getElementById('total-stories').textContent = stories.length;
-            document.getElementById('total-books').textContent = books.length;
-        }
-
-        // Utility functions
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium ${
-                type === 'success' ? 'bg-green-600' :
-                type === 'error' ? 'bg-red-600' :
-                'bg-blue-600'
-            }`;
-            toast.textContent = message;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 5000);
-        }
-
-        // Initialize app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializeApp);
-    </script>
+  
 
   <!-- Login Modal -->
   <div id="login-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
@@ -2085,6 +960,6 @@
     </div>
    </div>
   </div>
-
+ <script src="/static/main.js"></script>
 </body>
 </html>

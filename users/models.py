@@ -15,6 +15,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     student_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    personal_email = models.EmailField(blank=True, null=True, help_text="Optional personal email for notifications")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

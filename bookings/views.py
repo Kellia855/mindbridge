@@ -1,131 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from .models import Booking
-from .forms import BookingForm
-from .serializers import BookingSerializer, BookingDetailSerializer
-
-
-# ========== REST API ViewSets ==========
-
-class BookingViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for bookings.
-    Students can only view/manage their own bookings.
-    Wellness team can view/manage all bookings.
-    """
-    serializer_class = BookingSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    
-    def get_queryset(self):
-        user = self.request.user
-        if hasattr(user, 'is_wellness_team') and user.is_wellness_team:
-            return Booking.objects.all()
-        return Booking.objects.filter(student=user)
-    
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return BookingDetailSerializer
-        return BookingSerializer
-    
-    def create(self, request, *args, **kwargs):
-        """Override create to add better error logging."""
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            print("Validation errors:", serializer.errors)
-        return super().create(request, *args, **kwargs)
-    
-    @action(detail=True, methods=['post'])
-    def cancel(self, request, pk=None):
-        """Cancel a booking and delete Google Meet event."""
-        booking = self.get_object()
-        if booking.can_cancel():
-            booking.status = 'cancelled'
-            
-            # Try to delete Google Calendar event
-            if booking.calendar_event_id:
-                try:
-                    from .google_meet import delete_meet_event
-                    delete_meet_event(booking.calendar_event_id)
-                except Exception as e:
-                    print(f"Failed to delete calendar event: {e}")
-            
-            booking.save()
-            return Response({'status': 'booking cancelled'})
-        return Response(
-            {'error': 'This booking cannot be cancelled'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def approve(self, request, pk=None):
-        """Approve a booking (wellness team only) and create Google Meet link."""
-        if not hasattr(request.user, 'is_wellness_team') or not request.user.is_wellness_team:
-            return Response(
-                {'error': 'Only wellness team can approve bookings'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        
-        booking = self.get_object()
-        booking.status = 'approved'
-        
-        # Try to create Google Meet link
-        try:
-            from .google_meet import create_meet_event
-            print(f"Creating Meet event for booking {booking.id}")
-            meet_data = create_meet_event(booking)
-            print(f"Meet data result: {meet_data}")
-            
-            if meet_data:
-                booking.meet_link = meet_data['meet_link']
-                booking.calendar_event_id = meet_data['event_id']
-                booking.save()
-                return Response({
-                    'status': 'booking approved',
-                    'meet_link': meet_data['meet_link'],
-                    'calendar_link': meet_data.get('html_link', '')
-                })
-            else:
-                # Fallback: approve without Meet link
-                print("Meet data was None - creation failed")
-                booking.save()
-                return Response({
-                    'status': 'booking approved (Meet link creation failed)',
-                    'message': 'Please create meeting link manually'
-                })
-        except Exception as e:
-            # Fallback: approve without Meet link
-            print(f"Exception creating Meet link: {type(e).__name__}: {str(e)}")
-            import traceback
-            traceback.print_exc()
-            booking.save()
-            return Response({
-                'status': 'booking approved (Meet link creation failed)',
-                'error': str(e),
-                'message': 'Please create meeting link manually'
-            })
-    
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    def reject(self, request, pk=None):
-        """Reject a booking (wellness team only)."""
-        if not hasattr(request.user, 'is_wellness_team') or not request.user.is_wellness_team:
-            return Response(
-                {'error': 'Only wellness team can reject bookings'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        
-        booking = self.get_object()
-        booking.status = 'rejected'
-        booking.notes = request.data.get('notes', '')
-        booking.save()
-        return Response({'status': 'booking rejected'})
-
-
 # ========== Template-based Views (keep for admin/legacy) ==========
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def booking_list(request):
@@ -137,41 +13,108 @@ def booking_list(request):
         bookings = Booking.objects.all()
     else:
         bookings = Booking.objects.filter(student=request.user)
-    
     return render(request, 'bookings/booking_list.html', {'bookings': bookings})
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.mail import send_mail
+from .gmail_utils import send_gmail
+from django.conf import settings
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from decouple import config
+from .models import Booking
+from .forms import BookingForm
+from .serializers import BookingSerializer, BookingDetailSerializer
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
+import base64
+from email.mime.text import MIMEText
 
 
-def booking_create_public(request):
-    """
-    Public booking form accessible without login.
-    """
-    if request.method == 'POST':
-        form = BookingForm(request.POST)
-        if form.is_valid():
-            booking = form.save(commit=False)
-            if request.user.is_authenticated:
-                booking.student = request.user
-                # Pre-fill from user if not provided
-                if not booking.full_name:
-                    booking.full_name = request.user.get_full_name() or request.user.username
-                if not booking.email:
-                    booking.email = request.user.email
-                if not booking.phone_number and request.user.phone_number:
-                    booking.phone_number = request.user.phone_number
+# ========== REST API ViewSets ==========
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def approve(self, request, pk=None):
+        booking = self.get_object()
+        # Only wellness team can approve
+        if not hasattr(request.user, 'is_wellness_team') or not request.user.is_wellness_team:
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Generate Google Meet link
+        try:
+            from .google_meet import create_meet_event
+            meet_data = create_meet_event(booking)
+            booking.status = 'approved'
+            booking.meet_link = meet_data['meet_link']
             booking.save()
-            messages.success(request, 'Booking created successfully! You will be notified once it is reviewed.')
-            return redirect('home')
-    else:
-        form = BookingForm()
-        # Pre-fill form for authenticated users
-        if request.user.is_authenticated:
-            form.initial = {
-                'full_name': request.user.get_full_name() or request.user.username,
-                'email': request.user.email,
-                'phone_number': getattr(request.user, 'phone_number', '')
-            }
-    
-    return render(request, 'bookings/booking_form.html', {'form': form})
+        except Exception as e:
+            print(f"Google Meet creation failed: {e}")
+            meet_data = None
+
+        # Send approval email and handle fallback
+        if meet_data:
+            try:
+                student_email = booking.student.email or booking.email
+                student_name = booking.student.first_name or booking.full_name or booking.student.username
+                subject = 'Booking Approved - Your Session is Confirmed!'
+                session_time = booking.time.strftime('%I:%M %p')
+                session_date = booking.date.strftime('%B %d, %Y')
+                message = f"""Hello {student_name},
+
+Your counseling session booking has been approved!
+
+Date: {session_date}
+Time: {session_time}
+Duration: 40 minutes
+Type: {booking.get_session_type_display()}
+
+Join your session using the Google Meet link below:
+{booking.meet_link}
+
+✓ Test your camera and microphone beforehand
+✓ Use headphones for better audio quality
+✓ Have a glass of water nearby
+✓ Keep your phone on silent
+✓ Be ready to share openly and honestly
+
+IMPORTANT:
+• Save this email for easy access to your meeting link
+• You can also find the meeting link in your MindBridge dashboard
+• If you need to cancel, please do so at least 24 hours in advance
+
+We're looking forward to supporting you on your wellness journey!
+
+Best regards,
+The MindBridge Wellness Team
+African Leadership University
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Need help? Log in to your MindBridge account or contact our wellness team.
+"""
+                send_gmail(student_email, subject, message)
+                print(f"✓ Approval email with Google Meet link sent to {student_email}")
+            except Exception as e:
+                print(f"Failed to send approval email: {e}")
+            return Response({
+                'status': 'booking approved',
+                'meet_link': meet_data['meet_link'],
+                'event_id': meet_data['event_id'],
+                'message': 'Booking approved! Google Meet invitation sent to student email.'
+            })
+        else:
+            # Fallback: approve without Meet link
+            print("Google Meet data was None - creation failed")
+            return Response({
+                'status': 'booking approved (Google Meet creation failed)',
+                'message': 'Please create meeting link manually'
+            })
+    # ...existing code for booking_create_public...
 
 
 @login_required

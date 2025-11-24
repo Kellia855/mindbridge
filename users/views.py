@@ -89,6 +89,11 @@ def api_register(request):
         return JsonResponse({'ok': False, 'error': 'username and passwords are required'}, status=400)
     if password != password2:
         return JsonResponse({'ok': False, 'error': 'passwords do not match'}, status=400)
+    
+    # Validate student email domain
+    if role == 'student' and email:
+        if not email.lower().endswith('@alustudent.com'):
+            return JsonResponse({'ok': False, 'error': 'Please use your ALU student email (@alustudent.com)'}, status=400)
 
     User = get_user_model()
     if User.objects.filter(username=username).exists():

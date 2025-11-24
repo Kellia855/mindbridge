@@ -10,55 +10,56 @@ MINDBRIDGE is a comprehensive digital wellness platform designed specifically fo
 
 ```
 mindbridge/
-├── mindbridge/                 # Main project directory
+├── manage.py
+├── MIGRATIONS.md
+├── README.md
+├── requirements.txt
+├── bookings/
 │   ├── __init__.py
-│   ├── settings.py            # Project settings
-│   ├── urls.py                # Main URL configuration
-│   ├── wsgi.py                # WSGI configuration
-│   └── asgi.py                # ASGI configuration
-├── users/                      # User management app
-│   ├── models.py              # Custom User model
-│   ├── views.py               # Authentication views
-│   ├── forms.py               # Registration forms
-│   ├── urls.py                # User URLs
-│   └── admin.py               # Admin configuration
-├── bookings/                   # Session booking app
-│   ├── models.py              # Booking model
-│   ├── views.py               # Booking CRUD views
-│   ├── forms.py               # Booking forms
-│   ├── urls.py                # Booking URLs
-│   └── admin.py               # Admin configuration
-├── posts/                      # Anonymous posting app
-│   ├── models.py              # Post model
-│   ├── views.py               # Post views
-│   ├── forms.py               # Post forms
-│   ├── urls.py                # Post URLs
-│   └── admin.py               # Admin configuration
-├── library/                    # Digital library app
-│   ├── models.py              # LibraryBook model
-│   ├── views.py               # Library views
-│   ├── urls.py                # Library URLs
-│   └── admin.py               # Admin configuration
-├── events/                     # Events management app
-│   ├── models.py              # Event & Registration models
-│   ├── views.py               # Event views
-│   ├── forms.py               # Event forms
-│   ├── urls.py                # Event URLs
-│   └── admin.py               # Admin configuration
-├── templates/                  # HTML templates
-│   ├── base.html              # Base template
-│   ├── home.html              # Homepage
-│   ├── users/                 # User templates
-│   ├── bookings/              # Booking templates
-│   ├── posts/                 # Post templates
-│   ├── library/               # Library templates
-│   └── events/                # Event templates
-├── static/                     # Static files (CSS, JS, images)
-├── media/                      # User uploaded files
-├── .env                        # Environment variables
-├── requirements.txt            # Python dependencies
-├── manage.py                   # Django management script
-└── README.md                   # This file
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── events/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── frontend/
+│   ├── index.html
+├── library/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── mindbrige_app/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── posts/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── users/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
 ```
 
 ---
@@ -112,7 +113,7 @@ Create a `.env` file in the project root:
 SECRET_KEY=your-super-secret-key-change-this-in-production
 DEBUG=True
 DB_NAME=mindbridge_db
-DB_USER=root
+DB_USER=your_user
 DB_PASSWORD=your_mysql_password
 DB_HOST=localhost
 DB_PORT=3306
@@ -411,8 +412,7 @@ CREATE TABLE event_registrations (
 
 ### Wellness Team Role
 **Permissions:**
-- All student permissions
-- View all bookings
+- All student permissions except booking sessions
 - Update booking status
 - Approve/reject posts
 - Create and manage events
@@ -653,7 +653,6 @@ python manage.py test
 
 3. **Mobile App**
    - React Native or Flutter
-   - Push notifications
    - Offline access
 
 4. **Analytics Dashboard**
@@ -666,10 +665,6 @@ python manage.py test
    - Moderated peer groups
 
 ### Technical Improvements
-- REST API with Django REST Framework
-- Real-time notifications with WebSockets
-- Advanced search with Elasticsearch
-- File upload optimization
 - Caching with Redis
 - Rate limiting
 

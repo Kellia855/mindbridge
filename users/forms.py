@@ -27,10 +27,14 @@ class StudentRegistrationForm(UserCreationForm):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number (Optional)'})
     )
+    personal_email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Personal Email (Optional)'})
+    )
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'student_id', 'phone_number', 'password1', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'student_id', 'phone_number', 'personal_email', 'password1', 'password2')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,6 +49,7 @@ class StudentRegistrationForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         user.student_id = self.cleaned_data['student_id']
         user.phone_number = self.cleaned_data.get('phone_number', '')
+        user.personal_email = self.cleaned_data.get('personal_email', '')
         user.role = 'student'
         if commit:
             user.save()
