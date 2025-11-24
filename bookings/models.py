@@ -36,9 +36,10 @@ class Booking(models.Model):
     additional_notes = models.TextField(blank=True, null=True, help_text="Any additional information")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     notes = models.TextField(blank=True, null=True, help_text="Admin notes")
-    # Google Meet integration fields
-    meet_link = models.URLField(blank=True, null=True, help_text="Google Meet video call link")
-    calendar_event_id = models.CharField(max_length=255, blank=True, null=True, help_text="Google Calendar event ID")
+    # Video meeting integration fields
+    meet_link = models.URLField(blank=True, null=True, help_text="Video call link (Zoom/Google Meet)")
+    meeting_id = models.CharField(max_length=255, blank=True, null=True, help_text="Zoom meeting ID")
+    calendar_event_id = models.CharField(max_length=255, blank=True, null=True, help_text="Google Calendar event ID (legacy)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

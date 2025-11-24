@@ -9,7 +9,9 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()
-    time = models.TimeField()
+    time = models.TimeField(help_text="Event start time (kept for backward compatibility)")
+    start_time = models.TimeField(null=True, blank=True, help_text="Event start time")
+    end_time = models.TimeField(null=True, blank=True, help_text="Event end time")
     location = models.CharField(max_length=200)
     organizer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
